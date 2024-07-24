@@ -20,10 +20,11 @@ import { Input } from "@nextui-org/input";
 import NextLink from "next/link";
 import { Avatar } from "@nextui-org/avatar";
 
+import ModalPlacement from "./ui/modalPlacement";
+
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
-import ModalPlacement from "./ui/modalPlacement";
 
 export const Navbar = () => {
   const searchInput = (
@@ -96,7 +97,7 @@ export const Navbar = () => {
         </div>
       </NavbarMenu>
       <div className="flex gap-4 items-center">
-        <ModalPlacement />
+        {/* <ModalPlacement /> */}
         <Dropdown backdrop="blur">
           <DropdownTrigger>
             <Avatar
