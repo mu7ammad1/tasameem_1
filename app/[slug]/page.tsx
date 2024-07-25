@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Image } from "@nextui-org/image";
 import { Button } from "@nextui-org/button";
 import { Tabs, Tab } from "@nextui-org/react";
@@ -22,10 +22,29 @@ export default function Page({ params }: { params: { slug: string } }) {
           className: `flex flex-col mt-3 justify-center items-center `,
         })}
       >
-        <h1 className={`text-2xl mb-1 tracking-wide`}>twassul company</h1>
+        <h1 className={`text-2xl mb-1 tracking-wide flex items-center gap-3`}>
+          <p>twassul company</p>
+          <svg
+            className="size-5"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+              fillRule="evenodd"
+            />
+          </svg>
+        </h1>
         <div className={`flex justify-center items-center gap-5`}>
           <p className={`text-sm mb-1 tracking-widest`}>@{params.slug}</p>
           <p className={`text-sm mb-2 tracking-wide`}>3D Artist / Generalist</p>
+        </div>
+        <div className={`flex justify-center items-center gap-5`}>
+          <p className={`text-sm mb-2 tracking-wide`}>
+            Looking to start an interesting project 👋
+          </p>
         </div>
         <Button
           className="leading-8 tracking-widest mt-2 w-40 font-medium"
@@ -45,27 +64,25 @@ export default function Page({ params }: { params: { slug: string } }) {
                 <div className="flex items-center space-x-2">
                   <svg
                     aria-hidden="true"
+                    className="lucide lucide-library"
                     fill="none"
                     focusable="false"
-                    height="24"
+                    height="20"
                     role="presentation"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
                     viewBox="0 0 24 24"
-                    width="24"
+                    width="20"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path
-                      d="M2.58078 19.0112L2.56078 19.0312C2.29078 18.4413 2.12078 17.7713 2.05078 17.0312C2.12078 17.7613 2.31078 18.4212 2.58078 19.0112Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M9.00109 10.3811C10.3155 10.3811 11.3811 9.31553 11.3811 8.00109C11.3811 6.68666 10.3155 5.62109 9.00109 5.62109C7.68666 5.62109 6.62109 6.68666 6.62109 8.00109C6.62109 9.31553 7.68666 10.3811 9.00109 10.3811Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.19C2 17.28 2.19 18.23 2.56 19.03C3.42 20.93 5.26 22 7.81 22H16.19C19.83 22 22 19.83 22 16.19V13.9V7.81C22 4.17 19.83 2 16.19 2ZM20.37 12.5C19.59 11.83 18.33 11.83 17.55 12.5L13.39 16.07C12.61 16.74 11.35 16.74 10.57 16.07L10.23 15.79C9.52 15.17 8.39 15.11 7.59 15.65L3.85 18.16C3.63 17.6 3.5 16.95 3.5 16.19V7.81C3.5 4.99 4.99 3.5 7.81 3.5H16.19C19.01 3.5 20.5 4.99 20.5 7.81V12.61L20.37 12.5Z"
-                      fill="currentColor"
-                    />
+                    <path d="m16 6 4 14" />
+                    <path d="M12 6v14" />
+                    <path d="M8 8v12" />
+                    <path d="M4 4v16" />
                   </svg>
-                  <span>Photos</span>
+                  <span>Boards</span>
                 </div>
               }
             >
@@ -105,31 +122,27 @@ export default function Page({ params }: { params: { slug: string } }) {
                 <div className="flex items-center space-x-2">
                   <svg
                     aria-hidden="true"
+                    className="size-6"
                     fill="none"
                     focusable="false"
-                    height="24"
+                    height="20"
                     role="presentation"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
                     viewBox="0 0 24 24"
-                    width="24"
+                    width="20"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M14.7295 2H9.26953V6.36H14.7295V2Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M16.2305 2V6.36H21.8705C21.3605 3.61 19.3305 2.01 16.2305 2Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M2 7.85938V16.1894C2 19.8294 4.17 21.9994 7.81 21.9994H16.19C19.83 21.9994 22 19.8294 22 16.1894V7.85938H2ZM14.44 16.1794L12.36 17.3794C11.92 17.6294 11.49 17.7594 11.09 17.7594C10.79 17.7594 10.52 17.6894 10.27 17.5494C9.69 17.2194 9.37 16.5394 9.37 15.6594V13.2594C9.37 12.3794 9.69 11.6994 10.27 11.3694C10.85 11.0294 11.59 11.0894 12.36 11.5394L14.44 12.7394C15.21 13.1794 15.63 13.7994 15.63 14.4694C15.63 15.1394 15.2 15.7294 14.44 16.1794Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M7.76891 2C4.66891 2.01 2.63891 3.61 2.12891 6.36H7.76891V2Z"
-                      fill="currentColor"
+                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
-                  <span>Videos</span>
+
+                  <span>About</span>
                 </div>
               }
             />

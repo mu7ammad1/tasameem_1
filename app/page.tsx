@@ -7,21 +7,20 @@ import { SearchIcon } from "@/components/icons";
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-5 py-10">
-      <div
-        className="inline-block max-w-full text-center justify-center"
-        dir="auto"
-      >
-        <h1 className={title()}>الأشياءُ&nbsp;</h1>
-        <h1 className={title({ color: "violet" })}>الجَمِيلةُ&nbsp;</h1>
-        <br />
-        <h1 className={title()}>
-          هِيَ تِلكَ الَّتِي تَحْكِي بِصَمْتِهَا، بِحِكْمَتِهَا،
-          وَبِأَغْرَاضِهَا الخَفِيةِ .
-        </h1>
+      <div className="inline-block max-w-full text-center justify-center">
+        <div dir="auto">
+          <h1 className={title()}>الأشياءُ&nbsp;</h1>
+          <h1 className={title({ color: "violet" })}>الجَمِيلةُ&nbsp;</h1>
+          <br />
+          <h1 className={title()}>
+            هِيَ تِلكَ الَّتِي تَحْكِي بِصَمْتِهَا، بِحِكْمَتِهَا،
+            وَبِأَغْرَاضِهَا الخَفِيةِ .
+          </h1>
 
-        <h2 className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </h2>
+          <h2 className={subtitle({ class: "mt-4" })}>
+            Beautiful, fast and modern React UI library.
+          </h2>
+        </div>
         <div className="w-full flex justify-center items-center tracking-wide">
           <Input
             aria-label="Search"

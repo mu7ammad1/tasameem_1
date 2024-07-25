@@ -124,7 +124,7 @@ export default function CardBody_Page() {
             </CardBody>
           </Link>
           <CardFooter className="text-small justify-between">
-            <b>{item.title}</b>
+            <b>{item.title}00</b>
             <Link href={`/tasameem`}>
               <Avatar
                 className={`w-5 h-5`}
