@@ -21,6 +21,11 @@ export default function Page({ params }: { params: { slug: string } }) {
     <main
       className={`w-full flex justify-center items-center flex-1 flex-col gap-5 tracking-widest`}
     >
+      <div className="w-full flex justify-start items-center max-w-4xl text-left">
+        <h1 className="text-3xl font-medium" dir="auto">
+          Badge Week 2024: In The Rough Golf Apparel
+        </h1>
+      </div>
       <section className="flex justify-between items-center gap-3 w-full max-w-4xl sticky top-0 z-50 bg-background px-2 py-2">
         <div
           className={title({
