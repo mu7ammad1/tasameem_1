@@ -3,11 +3,11 @@ import { Metadata, Viewport } from "next";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 
-import { Providers } from "./providers";
-
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
+
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
@@ -55,7 +55,7 @@ export default function RootLayout({
                 href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
                 title="nextui.org homepage"
               >
-                <p className="text-primary">NextUI</p>
+                <p className="text-primary">Tasamim</p>
               </Link>
             </footer>
           </div>

@@ -20,7 +20,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             className: `flex justify-center items-center gap-3`,
           })}
         >
-          <Link href={`/tasameem`}>
+          <Link href={`/Tasamim`}>
             <Image
               alt="NextUI hero Image"
               className="rounded-full object-cover"
@@ -30,7 +30,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             />
           </Link>
           <div className="flex justify-center items-center gap-5">
-            <Link href={`/tasameem`}>
+            <Link href={`/Tasamim`}>
               <h1
                 className={`text-base font-normal tracking-wide flex flex-col`}
               >

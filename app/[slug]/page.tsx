@@ -1,7 +1,7 @@
 "use client";
 import { Image } from "@nextui-org/image";
 import { Button } from "@nextui-org/button";
-import { Tabs, Tab } from "@nextui-org/react";
+import { Tabs, Tab } from "@nextui-org/tabs";
 
 import { title } from "@/components/primitives";
 import CardBody_Page from "@/components/ui/CardBody";

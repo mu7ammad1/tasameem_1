@@ -1,26 +1,62 @@
-import React from "react";
+"use client";
+import * as React from "react";
+import { Avatar } from "@nextui-org/avatar";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Button,
-} from "@nextui-org/react";
+} from "@nextui-org/dropdown";
+import { useRouter } from "next/navigation";
 
-export default function DropdownPage() {
-  return (
-    <Dropdown backdrop="blur">
-      <DropdownTrigger>
-        <Button variant="bordered">Open Menu</Button>
-      </DropdownTrigger>
-      <DropdownMenu aria-label="Static Actions" variant="faded">
-        <DropdownItem key="new">New file</DropdownItem>
-        <DropdownItem key="copy">Copy link</DropdownItem>
-        <DropdownItem key="edit">Edit file</DropdownItem>
-        <DropdownItem key="delete" className="text-danger" color="danger">
-          Delete file
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
+import { createClient } from "@/utils/supabase/client";
+
+import ModalPlacement from "./ui/modalPlacement";
+
+export default function Dropdowns({ user }: any) {
+  const router = useRouter(); // Initialize the router
+
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.refresh();
+    } catch (error) {
+      console.error("Error signing out:", error);
+      router.refresh();
+    }
+  };
+
+  const supabase = createClient();
+
+  return user ? (
+    <div className="flex items-center gap-4">
+      <Dropdown backdrop="blur" placement="bottom-end">
+        <DropdownTrigger>
+          <Avatar
+            isBordered
+            as="button"
+            className="transition-transform"
+            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+          />
+        </DropdownTrigger>
+        <DropdownMenu aria-label="Profile Actions" variant="flat">
+          <DropdownItem key="profile" className="h-14 gap-2">
+            <p className="font-semibold">Signed in as</p>
+            <p className="font-semibold">{user?.email}</p>
+          </DropdownItem>
+          <DropdownItem key="settings">My Settings</DropdownItem>
+          <DropdownItem key="team_settings">Team Settings</DropdownItem>
+          <DropdownItem key="analytics">Analytics</DropdownItem>
+          <DropdownItem key="system">System</DropdownItem>
+          <DropdownItem key="configurations">Configurations</DropdownItem>
+          <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+          <DropdownItem key="logout" color="danger" onClick={signOut}>
+            Log Out
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+    </div>
+  ) : (
+    <ModalPlacement />
   );
 }

@@ -26,7 +26,7 @@ export default function Previous() {
 
   return (
     <section className={`w-full`}>
-      <h1 className="my-4 text-base font-medium">more by tasameem</h1>
+      <h1 className="my-4 text-base font-medium">more by Tasamim</h1>
       <div className="gap-5 grid grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-2 w-full max-lg:grid-cols-3">
         {list.map((item, index) => (
           <Card
@@ -52,7 +52,7 @@ export default function Previous() {
             </Link>
             <CardFooter className="text-small justify-between">
               <b>{item.title}</b>
-              <Link href={`/tasameem`}>
+              <Link href={`/Tasamim`}>
                 <Avatar
                   className={`w-5 h-5`}
                   src="https://i.pravatar.cc/150?u=a042581f4e29026024d"

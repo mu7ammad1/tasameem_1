@@ -20,9 +20,9 @@ export default function CardProf() {
             <Link
               className="text-2xl font-medium"
               color="foreground"
-              href="/tasameem"
+              href="/Tasamim"
             >
-              tasameem
+              Tasamim
             </Link>
           }
         />

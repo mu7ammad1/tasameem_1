@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import {
   Modal,
@@ -17,7 +18,7 @@ export default function ModalPlacement() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       <Button className="max-w-fit" onPress={onOpen}>
         تسجيل دخول
       </Button>

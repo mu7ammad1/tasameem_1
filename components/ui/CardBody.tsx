@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardFooter } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { CardBody } from "@nextui-org/card";
@@ -100,40 +99,42 @@ export default function CardBody_Page() {
   ];
 
   return (
-    <div className="gap-3 grid grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-2 w-full mt-16 max-lg:grid-cols-3">
-      {list.map((item, index) => (
-        <Card
-          key={index}
-          isPressable
-          className={`bg-white/0 light:bg-white/0`}
-          shadow="none"
-        >
-          <Link
-            className="flex flex-col flex-1 w-full"
-            href={`/board/${item.board_id}`}
+    <section>
+      <div className="gap-3 grid grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-2 w-full mt-5 max-lg:grid-cols-3">
+        {list.map((item, index) => (
+          <Card
+            key={index}
+            isPressable
+            className={`bg-white/0 light:bg-white/0`}
+            shadow="none"
           >
-            <CardBody className="overflow-visible p-0">
-              <Image
-                alt={item.title}
-                className="w-full object-cover h-60"
-                radius="sm"
-                shadow="none"
-                src={item.img}
-                width="100%"
-              />
-            </CardBody>
-          </Link>
-          <CardFooter className="text-small justify-between">
-            <b>{item.title}00</b>
-            <Link href={`/tasameem`}>
-              <Avatar
-                className={`w-5 h-5`}
-                src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-              />
+            <Link
+              className="flex flex-col flex-1 w-full"
+              href={`/board/${item.board_id}`}
+            >
+              <CardBody className="overflow-visible p-0">
+                <Image
+                  alt={item.title}
+                  className="w-full object-cover h-60"
+                  radius="sm"
+                  shadow="none"
+                  src={item.img}
+                  width="100%"
+                />
+              </CardBody>
             </Link>
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
+            <CardFooter className="text-small justify-between">
+              <b>{item.title}00</b>
+              <Link href={`/Tasamim`}>
+                <Avatar
+                  className={`w-5 h-5`}
+                  src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
+                />
+              </Link>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </section>
   );
 }

@@ -1,9 +1,7 @@
-import * as React from "react";
-
 import { IconSvgProps } from "@/types";
 
 export const Logo: React.FC<IconSvgProps> = ({
-  size = 42,
+  size = 40,
   width,
   height,
   ...props
@@ -11,14 +9,16 @@ export const Logo: React.FC<IconSvgProps> = ({
   <svg
     fill="none"
     height={size || height}
-    viewBox="0 0 32 32"
     width={size || width}
     {...props}
+    viewBox="0 0 118 96"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
       clipRule="evenodd"
-      d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
+      d="M97.6673 95.1823H20.0351C3.79455 95.1823 -5.67442 76.8486 3.72637 63.6054L42.898 8.42309C50.9125 -2.86713 67.6978 -2.79477 75.6147 8.56411L114.075 63.7464C123.317 77.0056 113.829 95.1823 97.6673 95.1823ZM57.9404 77.5994C70.7369 77.5994 81.1105 69.066 81.1105 58.5396C81.1105 48.0131 70.7369 39.4797 57.9404 39.4797C45.1438 39.4797 34.7702 48.0131 34.7702 58.5396C34.7702 69.066 45.1438 77.5994 57.9404 77.5994Z"
       fill="currentColor"
+      fillOpacity="0.8"
       fillRule="evenodd"
     />
   </svg>
