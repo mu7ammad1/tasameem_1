@@ -7,7 +7,7 @@ import { title } from "@/components/primitives";
 import CardProf from "@/components/ui/CardProf";
 
 const SectionBady = dynamic(() => import("@/components/ui/SectionBady"), {
-  ssr: true,
+  ssr: false,
   loading: () => <p>Loading...</p>,
 });
 
@@ -23,7 +23,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     >
       <div className="w-full flex justify-start items-center max-w-4xl text-left">
         <h1 className="text-3xl font-medium" dir="auto">
-          Badge Week 2024: In The Rough Golf Apparel
+          Badge Week 2024: In The Rough Golf Apparel {params.slug}
         </h1>
       </div>
       <section className="flex justify-between items-center gap-3 w-full max-w-4xl sticky top-0 z-50 bg-background px-2 py-2">

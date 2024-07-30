@@ -1,11 +1,9 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 import { SubmitButton } from "@/app/signup/submit-button";
-import { bio, full_name, user, username } from "@/action/read";
 
-export default function Profile({
+export default async function Profile({
   searchParams,
 }: {
   searchParams: { message: string };
@@ -13,7 +11,7 @@ export default function Profile({
   const insert = async (formData: FormData) => {
     "use server";
 
-    const origin = headers().get("origin");
+    // const origin = headers().get("origin") as any
     const username = formData.get("username") as string;
     const yourname = formData.get("yourname") as string;
     const bio = formData.get("bio") as string;
@@ -21,7 +19,7 @@ export default function Profile({
 
     const supabase = createClient();
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("profiles")
       .upsert([
         {
@@ -40,6 +38,33 @@ export default function Profile({
 
     return redirect("/profile?message=لقد تم تحديث البيانات بنجاح");
   };
+
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let { data: full_name } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq(`id`, user?.id)
+    .limit(1)
+    .single();
+
+  let { data: username } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq(`id`, user?.id)
+    .limit(1)
+    .single();
+
+  let { data: bio } = await supabase
+    .from("profiles")
+    .select("bio")
+    .eq(`id`, user?.id)
+    .limit(1)
+    .single();
 
   return (
     <div className="flex justify-center items-start">

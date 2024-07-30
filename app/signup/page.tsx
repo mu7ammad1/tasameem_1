@@ -2,11 +2,10 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
-import { user } from "@/action/read";
 
 import { SubmitButton } from "./submit-button";
 
-export default function Login({
+export default async function Login({
   searchParams,
 }: {
   searchParams: { message: string };
@@ -52,7 +51,7 @@ export default function Login({
 
     return redirect("/signup?message=Check email to continue sign in process");
   };
-  const signInWithGithub = async (formData: FormData) => {
+  const signInWithGithub = async () => {
     "use server";
 
     const origin = headers().get("origin");
@@ -75,7 +74,7 @@ export default function Login({
 
     return redirect("/signup?message=Check email to continue sign in process");
   };
-  const signInWithGoogle = async (formData: FormData) => {
+  const signInWithGoogle = async () => {
     "use server";
 
     const origin = headers().get("origin");
@@ -98,6 +97,11 @@ export default function Login({
 
     return redirect("/signup?message=Check email to continue sign in process");
   };
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return !user ? (
     <div className="flex flex-row-reverse w-full px-8 justify-center gap-2 items-start mt-16 h-screen">

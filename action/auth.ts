@@ -1,15 +1,15 @@
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+// import { createClient } from "@/utils/supabase/server";
 
-const signOut = async () => {
-  "use server";
+// const signOut = async () => {
+//   "use server";
 
-  const supabase = createClient();
+//   const supabase = createClient();
 
-  await supabase.auth.signOut();
+//   await supabase.auth.signOut();
 
-  return redirect("/signup");
-};
+//   return redirect("/signup");
+// };
 
-export { signOut };
+// export { signOut };

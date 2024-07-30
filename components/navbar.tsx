@@ -15,9 +15,9 @@ import NextLink from "next/link";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
-import { user } from "@/action/read";
+// import { user } from "@/action/read";
 
-import Dropdowns from "./Dropdown";
+// import Dropdowns from "./Dropdown";
 
 export const Navbar = () => {
   const searchInput = (
@@ -41,7 +41,7 @@ export const Navbar = () => {
     />
   );
 
-  const userid = user || null;
+  // const userid = user || null;
 
   return (
     <NextUINavbar maxWidth="xl" position="static">
@@ -92,7 +92,7 @@ export const Navbar = () => {
         </div>
       </NavbarMenu>
 
-      <Dropdowns user={userid} />
+      {/* <Dropdowns user={userid} /> */}
     </NextUINavbar>
   );
 };

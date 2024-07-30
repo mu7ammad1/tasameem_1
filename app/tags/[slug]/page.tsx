@@ -34,7 +34,7 @@ export default function Page({ params }: { params: { slug: string } }) {
               <h1
                 className={`text-base font-normal tracking-wide flex flex-col`}
               >
-                twassul company
+                {params.slug}
                 <span className="text-xs">Designer</span>
               </h1>
             </Link>
