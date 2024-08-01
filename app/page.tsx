@@ -3,15 +3,14 @@ import { Input } from "@nextui-org/input";
 import { subtitle } from "@/components/primitives";
 import { SearchIcon } from "@/components/icons";
 import Tasamim from "@/components/ui/tasamim";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function Home() {
   const supabase = createClient();
 
   let { data: board } = await supabase
     .from("boards")
-    .select("background,title,id,username")
-    .limit(32);
+    .select("background,title,id,username");
 
   return (
     <section className="flex flex-col items-center justify-center gap-5 py-10 w-full">

@@ -18,14 +18,14 @@ export default function Dropdowns({ user }: any) {
 
   const signOut = async () => {
     try {
+      const supabase = createClient();
+
       await supabase.auth.signOut();
       router.refresh();
     } catch (error) {
       router.refresh();
     }
   };
-
-  const supabase = createClient();
 
   return user ? (
     <div className="flex items-center gap-4">

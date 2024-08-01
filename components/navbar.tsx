@@ -2,10 +2,10 @@ import React from "react";
 
 import { Navbar } from "./Nav";
 
-export default function NavbarCom() {
+export default function NavbarCom({ sss }: any) {
   return (
-    <nav>
-      <Navbar />
-    </nav>
+    <div>
+      <Navbar user={sss} />
+    </div>
   );
 }

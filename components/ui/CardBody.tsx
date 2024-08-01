@@ -53,7 +53,7 @@ export default function CardBody_Page({ sss }: any) {
           </Link>
           <CardFooter className="text-small justify-between">
             <b>{item.title}</b>
-            <Link href={`/Tasamim`}>
+            <Link href={`/${item.username}`}>
               <Avatar
                 className={`w-5 h-5`}
                 src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${await getUserData(item.username)}`}
