@@ -1,11 +1,11 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@nextui-org/link";
 import clsx from "clsx";
+import dynamic from "next/dynamic";
+import { Inter as FontSans } from "next/font/google";
 
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
-import { Navbar } from "@/components/navbar";
+import NavbarCom from "@/components/navbar";
 
 import { Providers } from "./providers";
 
@@ -26,6 +26,15 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
 };
+export const fontSans = FontSans({
+  subsets: ["latin-ext"],
+  variable: "--font-sans",
+});
+
+const Footer = dynamic(() => import("@/components/ui/footer"), {
+  ssr: false,
+  loading: () => <p>Loading...</p>,
+});
 
 export default function RootLayout({
   children,
@@ -43,21 +52,11 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
-            <Navbar />
+            <NavbarCom />
             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
               {children}
             </main>
-            <footer className="w-full flex items-center justify-center py-3 gap-2">
-              <span className="text-default-600">Powered by</span>
-              <Link
-                isExternal
-                className="flex items-center text-current"
-                href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-                title="nextui.org homepage"
-              >
-                <p className="text-primary">Tasamim</p>
-              </Link>
-            </footer>
+            <Footer />
           </div>
         </Providers>
       </body>

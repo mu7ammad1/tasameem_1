@@ -2,9 +2,17 @@ import { Input } from "@nextui-org/input";
 
 import { subtitle } from "@/components/primitives";
 import { SearchIcon } from "@/components/icons";
-import { Tasamim } from "@/components/ui/tasamim";
+import Tasamim from "@/components/ui/tasamim";
+import { createClient } from "@/utils/supabase/client";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = createClient();
+
+  let { data: board } = await supabase
+    .from("boards")
+    .select("background,title,id,username")
+    .limit(32);
+
   return (
     <section className="flex flex-col items-center justify-center gap-5 py-10 w-full">
       <div className="inline-block max-w-full text-center justify-center w-full">
@@ -30,13 +38,13 @@ export default function Home() {
             واكتشف كيف يتحول الحلم إلى فن
           </h2>
         </div>
-        <div className="w-full flex justify-center items-center tracking-wide">
+        <div className="w-full flex flex-col justify-center items-center tracking-wide">
           <Input
             aria-label="Search"
             classNames={{
-              inputWrapper: "bg-default-100 py-6",
-              input: "text-xl p-10",
-              base: "w-1/2 my-5 rounded-xl max-md:w-full",
+              inputWrapper: "bg-default-100 py-6 my-0",
+              input: "text-xl p-0",
+              base: "w-1/2 mt-5 mb-1 rounded-xl max-md:w-full",
             }}
             dir="rtl"
             labelPlacement="outside"
@@ -46,9 +54,12 @@ export default function Home() {
             }
             type="search"
           />
+          <div className="w-1/2 flex justify-end max-md:w-full">
+            خطوط , تصاميم
+          </div>
         </div>
         <div />
-        <Tasamim />
+        <Tasamim sss={board} />
       </div>
     </section>
   );

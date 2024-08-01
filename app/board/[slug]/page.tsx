@@ -16,7 +16,23 @@ const Previous = dynamic(() => import("@/components/ui/Previous"), {
   loading: () => <p>Loading...</p>,
 });
 
-export default function Page({ params }: { params: { slug: string } }) {
+import { createClient } from "@/utils/supabase/server";
+
+export default async function Page({ params }: { params: { slug: string } }) {
+  const supabase = createClient();
+  let { data: username } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq(`username`, params.slug.toLowerCase())
+    .limit(1)
+    .single();
+
+  let { data: board } = await supabase
+    .from("boards")
+    .select("created_at,boards,views,tags,user_id,background,biography,loves")
+    .limit(1)
+    .single();
+
   return (
     <main
       className={`w-full flex justify-center items-center flex-1 flex-col gap-5 tracking-widest`}
