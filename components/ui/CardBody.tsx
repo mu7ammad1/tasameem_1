@@ -27,6 +27,7 @@ export default function CardBody_Page({ sss }: any) {
     }
   }
 
+
   return (
     <div className="gap-3 grid grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-2 w-full mt-5 max-lg:grid-cols-3">
       {sss.map(async (item: any, index: number) => (

@@ -4,6 +4,7 @@ import { subtitle } from "@/components/primitives";
 import { SearchIcon } from "@/components/icons";
 import Tasamim from "@/components/ui/tasamim";
 import { createClient } from "@/utils/supabase/server";
+import BTY from "@/components/ui/BTY";
 
 export default async function Home() {
   const supabase = createClient();
@@ -57,7 +58,9 @@ export default async function Home() {
             خطوط , تصاميم
           </div>
         </div>
-        <div />
+        <div>
+          <BTY />
+        </div>
         <Tasamim sss={board} />
       </div>
     </section>

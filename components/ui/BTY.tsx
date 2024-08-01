@@ -12,21 +12,37 @@ import React from "react";
 
 export default function BTY() {
   const pathname = usePathname();
+  const [selectedKeys, setSelectedKeys]: any = React.useState(
+    new Set(["Recommended"]),
+  );
+
+  const selectedValue = React.useMemo(
+    () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
+    [selectedKeys],
+  );
 
   return (
     <div className={`flex items-center justify-between w-full gap-3 mt-10`}>
-      <div className="flex gap-3">
+      <div className="flex gap-5">
         <Dropdown>
           <DropdownTrigger>
-            <Button variant="bordered">Open Menu</Button>
+            <Button className="capitalize" variant="bordered">
+              {selectedValue}
+            </Button>
           </DropdownTrigger>
-          <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new">New file</DropdownItem>
-            <DropdownItem key="copy">Copy link</DropdownItem>
-            <DropdownItem key="edit">Edit file</DropdownItem>
-            <DropdownItem key="delete" className="text-danger" color="danger">
-              Delete file
-            </DropdownItem>
+          <DropdownMenu
+            disallowEmptySelection
+            aria-label="Single selection example"
+            selectedKeys={selectedKeys}
+            selectionMode="single"
+            variant="flat"
+            onSelectionChange={setSelectedKeys}
+          >
+            <DropdownItem key="Recommended">Recommended</DropdownItem>
+            <DropdownItem key="Curated">Curated</DropdownItem>
+            <DropdownItem key="Most_Viewed">Most Viewed</DropdownItem>
+            <DropdownItem key="Most_Recent">Most Recent</DropdownItem>
+            <DropdownItem key="Most_Discussed">Most Discussed</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
