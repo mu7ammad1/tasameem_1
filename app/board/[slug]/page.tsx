@@ -5,9 +5,10 @@ import { Link as Links } from "@nextui-org/link";
 
 import { title } from "@/components/primitives";
 import CardProf from "@/components/ui/CardProf";
+import { createClient } from "@/utils/supabase/server";
 
 const SectionBady = dynamic(() => import("@/components/ui/SectionBady"), {
-  ssr: false,
+  ssr: true,
   loading: () => <p>Loading...</p>,
 });
 
@@ -16,22 +17,19 @@ const Previous = dynamic(() => import("@/components/ui/Previous"), {
   loading: () => <p>Loading...</p>,
 });
 
-import { createClient } from "@/utils/supabase/server";
-
 export default async function Page({ params }: { params: { slug: string } }) {
   const supabase = createClient();
-  let { data: username } = await supabase
-    .from("profiles")
-    .select("username")
-    .eq(`username`, params.slug.toLowerCase())
-    .limit(1)
-    .single();
 
   let { data: board } = await supabase
     .from("boards")
-    .select("created_at,boards,views,tags,user_id,background,biography,loves")
-    .limit(1)
+    .select(
+      `id,created_at,boards,views,tags,background,biography,loves,title,profiles (username,full_name,avatar)`,
+    )
+    .eq("id", params.slug)
     .single();
+
+  // إذا كانت profiles مصفوفة
+  const profile: any = board?.profiles;
 
   return (
     <main
@@ -39,10 +37,10 @@ export default async function Page({ params }: { params: { slug: string } }) {
     >
       <div className="w-full flex justify-start items-center max-w-4xl text-left">
         <h1 className="text-3xl font-medium" dir="auto">
-          Badge Week 2024: In The Rough Golf Apparel {params.slug}
+          00{" "}
         </h1>
       </div>
-      <section className="flex justify-between items-center gap-3 w-full max-w-4xl sticky top-0 z-50 bg-background px-2 py-2">
+      <section className="flex justify-between items-center gap-3 w-full max-w-4xl sticky top-0 z-10 bg-background px-2 py-2">
         <div
           className={title({
             className: `flex justify-center items-center gap-3 *:tracking-wide`,
@@ -50,22 +48,25 @@ export default async function Page({ params }: { params: { slug: string } }) {
         >
           <User
             avatarProps={{
-              src: "https://avatars.githubusercontent.com/u/30373425?v=4",
+              src: `https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${profile?.avatar}`,
               className: "mr-2",
               alt: "profile avatar",
             }}
             description={
-              <Links href="https://twitter.com/jrgarciadev" size="sm">
+              <Links
+                href={`https://twitter.com/${profile?.username}`}
+                size="sm"
+              >
                 Designer
               </Links>
             }
             name={
               <Links
                 color="foreground"
-                href="https://twitter.com/jrgarciadev"
+                href={`/${profile?.username}`}
                 size="sm"
               >
-                Junior Garcia
+                {profile?.full_name}
               </Links>
             }
           />
@@ -85,12 +86,13 @@ export default async function Page({ params }: { params: { slug: string } }) {
             className: `flex justify-center items-center gap-3`,
           })}
         >
+          {/* Like buttons */}
           <div
             aria-label="Like"
             className="p-2 border-1 border-foreground-400 rounded-full hover:border-secondary duration-500 *:hover:fill-secondary *:hover:stroke-secondary"
           >
             <svg
-              className="size-5 "
+              className="size-5"
               fill="none"
               stroke="currentColor"
               strokeWidth={1.5}
@@ -109,7 +111,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             className="p-2 border-1 border-foreground-400 rounded-full hover:border-secondary duration-500 *:hover:fill-secondary *:hover:stroke-secondary"
           >
             <svg
-              className="size-5 "
+              className="size-5"
               fill="none"
               stroke="currentColor"
               strokeWidth={1.5}
@@ -128,7 +130,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             className="p-2 border-1 border-foreground-400 rounded-full hover:border-secondary duration-500 *:hover:fill-secondary *:hover:stroke-secondary"
           >
             <svg
-              className="size-5 "
+              className="size-5"
               fill="none"
               stroke="currentColor"
               strokeWidth={1.5}
@@ -144,14 +146,16 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </div>
         </div>
       </section>
-
-      <section className="flex justify-between items-center gap-3 w-full max-w-4xl">
-        <SectionBady />
+      <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
+        {JSON.stringify(board?.boards, null, 2)}
       </section>
-      <section className="flex justify-between items-center gap-3 w-full max-w-4xl">
+      <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
+        <SectionBady boards={board?.boards} />
+      </section>
+      <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
         <CardProf />
       </section>
-      <section className="flex justify-between items-center gap-3 w-full max-w-4xl">
+      <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
         <Previous />
       </section>
     </main>

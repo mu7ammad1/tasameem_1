@@ -5,6 +5,7 @@ import { Avatar } from "@nextui-org/avatar";
 import { Link } from "@nextui-org/link";
 
 import { createClient } from "@/utils/supabase/client";
+import { Button } from "@nextui-org/button";
 
 export default function CardBody_Page({ sss }: any) {
   async function getUserData(username: string) {
