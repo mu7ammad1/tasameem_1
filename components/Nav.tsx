@@ -20,7 +20,7 @@ import { SearchIcon, Logo } from "@/components/icons";
 
 import Dropdowns from "./Dropdown";
 
-export function Navbar({ user }: any) {
+export function Navbar({ user, ss }: any) {
   const searchInput = (
     <Input
       aria-label="Search"
@@ -91,7 +91,7 @@ export function Navbar({ user }: any) {
             ))}
           </div>
         </NavbarMenu>
-        <Dropdowns user={user} />
+        <Dropdowns user={user} ss={ss} />
       </NextUINavbar>
     </div>
   );

@@ -35,6 +35,13 @@ export default async function RootLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  let { data: username } = await supabase
+    .from("profiles")
+    .select("username,avatar")
+    .eq(`id`, user?.id)
+    .limit(1)
+    .single();
+
   return (
     <html suppressHydrationWarning lang="en">
       <head />
@@ -43,7 +50,7 @@ export default async function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
-            <NavbarCom sss={user} />
+            <NavbarCom sss={user} ss={username} />
             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
               {children}
             </main>

@@ -1,11 +1,10 @@
 import dynamic from "next/dynamic";
 import { Button } from "@nextui-org/button";
-import { User } from "@nextui-org/user";
-import { Link as Links } from "@nextui-org/link";
 
 import { title } from "@/components/primitives";
 import CardProf from "@/components/ui/CardProf";
 import { createClient } from "@/utils/supabase/server";
+import PopoverUi from "@/components/ui/PopoverUi";
 
 const SectionBady = dynamic(() => import("@/components/ui/SectionBady"), {
   ssr: true,
@@ -23,13 +22,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
   let { data: board } = await supabase
     .from("boards")
     .select(
-      `id,created_at,boards,views,tags,background,biography,loves,title,profiles (username,full_name,avatar)`,
+      `id,created_at,boards,views,tags,background,biography,loves,title,profiles (username,full_name,avatar,bio),loves (love,board)`,
     )
     .eq("id", params.slug)
     .single();
 
   // إذا كانت profiles مصفوفة
   const profile: any = board?.profiles;
+  const follow: any = board?.loves;
 
   return (
     <main
@@ -37,65 +37,49 @@ export default async function Page({ params }: { params: { slug: string } }) {
     >
       <div className="w-full flex justify-start items-center max-w-4xl text-left">
         <h1 className="text-3xl font-medium" dir="auto">
-          00{" "}
+          {board?.title}
         </h1>
       </div>
-      <section className="flex justify-between items-center gap-3 w-full max-w-4xl sticky top-0 z-10 bg-background px-2 py-2">
+      <section className="flex justify-between items-center gap-3 w-full max-w-4xl sticky top-0 z-10 bg-background/50 backdrop-blur-lg px-2 py-2">
         <div
           className={title({
             className: `flex justify-center items-center gap-3 *:tracking-wide`,
           })}
         >
-          <User
-            avatarProps={{
-              src: `https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${profile?.avatar}`,
-              className: "mr-2",
-              alt: "profile avatar",
-            }}
-            description={
-              <Links
-                href={`https://twitter.com/${profile?.username}`}
-                size="sm"
-              >
-                Designer
-              </Links>
-            }
-            name={
-              <Links
-                color="foreground"
-                href={`/${profile?.username}`}
-                size="sm"
-              >
-                {profile?.full_name}
-              </Links>
-            }
+          <PopoverUi
+            avatar={profile?.avatar}
+            bio={profile?.bio}
+            full_name={profile?.full_name}
+            username={profile?.username}
           />
-          <div className="flex justify-center items-center gap-5">
-            <Button
-              className="leading-8 tracking-widest font-medium"
-              color="default"
-              size="sm"
-              variant="flat"
-            >
-              Follow
-            </Button>
-          </div>
+          <Button
+            className={"bg-transparent text-foreground border-default-200"}
+            color="primary"
+            radius="full"
+            size="sm"
+            variant={"bordered"}
+          >
+            Unfollow
+          </Button>
         </div>
         <div
           className={title({
-            className: `flex justify-center items-center gap-3`,
+            className: `flex justify-center items-center gap-3 max-sm:hidden`,
           })}
         >
-          {/* Like buttons */}
-          <div
+          <Button
+            itemScope
             aria-label="Like"
-            className="p-2 border-1 border-foreground-400 rounded-full hover:border-secondary duration-500 *:hover:fill-secondary *:hover:stroke-secondary"
+            className="p-2"
+            color="primary"
+            radius="full"
+            variant="solid"
           >
             <svg
-              className="size-5"
+              className="size-6"
               fill="none"
               stroke="currentColor"
-              strokeWidth={1.5}
+              strokeWidth={2.3}
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -105,13 +89,17 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 strokeLinejoin="round"
               />
             </svg>
-          </div>
-          <div
+            <b>{follow.length}</b>
+          </Button>
+          <Button
+            isIconOnly
             aria-label="Like"
-            className="p-2 border-1 border-foreground-400 rounded-full hover:border-secondary duration-500 *:hover:fill-secondary *:hover:stroke-secondary"
+            color="default"
+            radius="full"
+            variant="ghost"
           >
             <svg
-              className="size-5"
+              className="size-5 stroke-foreground-900 fill-none"
               fill="none"
               stroke="currentColor"
               strokeWidth={1.5}
@@ -124,30 +112,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 strokeLinejoin="round"
               />
             </svg>
-          </div>
-          <div
-            aria-label="Like"
-            className="p-2 border-1 border-foreground-400 rounded-full hover:border-secondary duration-500 *:hover:fill-secondary *:hover:stroke-secondary"
-          >
-            <svg
-              className="size-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
+          </Button>
         </div>
-      </section>
-      <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
-        {JSON.stringify(board?.boards, null, 2)}
       </section>
       <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
         <SectionBady boards={board?.boards} />

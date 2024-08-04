@@ -13,7 +13,7 @@ import { createClient } from "@/utils/supabase/client";
 
 import ModalPlacement from "./ui/modalPlacement";
 
-export default function Dropdowns({ user }: any) {
+export default function Dropdowns({ user, ss }: any) {
   const router = useRouter(); // Initialize the router
 
   const signOut = async () => {
@@ -34,8 +34,8 @@ export default function Dropdowns({ user }: any) {
           <Avatar
             isBordered
             as="button"
-            className="transition-transform"
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            className="transition-transform object-cover"
+            src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${ss?.avatar}`}
           />
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -43,9 +43,15 @@ export default function Dropdowns({ user }: any) {
             <p className="font-semibold">Signed in as</p>
             <p className="font-semibold">{user?.email}</p>
           </DropdownItem>
-          <DropdownItem key="settings">My Settings</DropdownItem>
-          <DropdownItem key="team_settings">Team Settings</DropdownItem>
-          <DropdownItem key="analytics">Analytics</DropdownItem>
+          <DropdownItem key="new" href="/new">
+            New
+          </DropdownItem>
+          <DropdownItem key="profile" href={`/${ss?.username}`}>
+            My Profile
+          </DropdownItem>
+          <DropdownItem key="settings" href="/dashboard/setting">
+            My Settings
+          </DropdownItem>
           <DropdownItem key="system">System</DropdownItem>
           <DropdownItem key="configurations">Configurations</DropdownItem>
           <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>

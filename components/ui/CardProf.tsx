@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "@nextui-org/link";
 import { User } from "@nextui-org/user";
 
-export default function CardProf({ bio ,full_name}: any) {
+export default function CardProf({ bio, full_name }: any) {
   return (
     <section className="w-full my-10">
       <div className="bg-foreground-100 p-5 w-full h-40 rounded-md mt-16 relative">

@@ -170,16 +170,16 @@ export default function Block() {
                   <div>
                     <Textarea
                       className="z-10 h-full w-full text-6xl font-semibold leading-loose whitespace-normal bg-background"
+                      dir="auto"
                       placeholder="Edit text"
+                      style={{
+                        fontSize: "28px",
+                        lineHeight: "2rem",
+                      }}
                       value={block.content}
                       onChange={(e) =>
                         handleContentChange(index, e.target.value)
                       }
-                      style={{
-                        fontSize: "28px",
-                        lineHeight: "2rem"
-                      }}
-                      dir="auto"
                     />
                   </div>
                 )}
@@ -232,6 +232,7 @@ export default function Block() {
             </Button>
           </div>
         </div>
+        {JSON.stringify(blocks, null, 2 | 4)}
       </section>
     </main>
   );

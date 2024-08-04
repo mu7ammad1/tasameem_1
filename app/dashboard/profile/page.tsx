@@ -45,26 +45,13 @@ export default async function Profile({
     data: { user },
   } = await supabase.auth.getUser();
 
-  let { data: full_name } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
-    .select("full_name")
+    .select("full_name,username,bio")
     .eq(`id`, user?.id)
     .limit(1)
     .single();
 
-  let { data: username } = await supabase
-    .from("profiles")
-    .select("username")
-    .eq(`id`, user?.id)
-    .limit(1)
-    .single();
-
-  let { data: bio } = await supabase
-    .from("profiles")
-    .select("bio")
-    .eq(`id`, user?.id)
-    .limit(1)
-    .single();
 
   return (
     <div className="flex justify-center items-start">
@@ -86,7 +73,7 @@ export default async function Profile({
         <label className="text-md text-right" htmlFor="password">
           اسمك
         </label>
-        {full_name?.full_name === null || full_name?.full_name === undefined ? (
+        {profile?.full_name === null || profile?.full_name === undefined ? (
           <input
             className="rounded-xl p-5 bg-inherit border mb-3 focus-visible:ring-emerald-500"
             dir="rtl"
@@ -97,7 +84,7 @@ export default async function Profile({
         ) : (
           <input
             className="rounded-xl p-5 bg-inherit border mb-3 focus-visible:ring-emerald-500"
-            defaultValue={`${full_name?.full_name}`}
+            defaultValue={`${profile?.full_name}`}
             dir="rtl"
             name="yourname"
             placeholder="اسمك"
@@ -108,7 +95,7 @@ export default async function Profile({
         <label className="text-md text-right" htmlFor="password">
           (username) اسم المستخدم
         </label>
-        {username?.username === null || username?.username === undefined ? (
+        {profile?.username === null || profile?.username === undefined ? (
           <input
             className="rounded-xl p-5 bg-inherit border mb-3 focus-visible:ring-emerald-500"
             dir="rtl"
@@ -119,7 +106,7 @@ export default async function Profile({
         ) : (
           <input
             className="rounded-xl p-5 bg-inherit border mb-3 focus-visible:ring-emerald-500"
-            defaultValue={`${username?.username}`}
+            defaultValue={`${profile?.username}`}
             dir="rtl"
             name="username"
             placeholder="(username) اسم المستخدم"
@@ -130,7 +117,7 @@ export default async function Profile({
           !اخبر الناس عنك
         </label>
 
-        {bio?.bio === null || bio?.bio === undefined ? (
+        {profile?.bio === null || profile?.bio === undefined ? (
           <textarea
             className="resize-none rounded-xl p-5 bg-inherit border mb-3 focus-visible:ring-emerald-500"
             dir="rtl"
@@ -140,7 +127,7 @@ export default async function Profile({
         ) : (
           <textarea
             className="resize-none rounded-xl p-5 bg-inherit border mb-3 focus-visible:ring-emerald-500"
-            defaultValue={`${bio?.bio}`}
+            defaultValue={`${profile?.bio}`}
             dir="rtl"
             name="bio"
             placeholder="!اخبر الناس عنك"
