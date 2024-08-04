@@ -6,17 +6,23 @@ import Slug from "./slug";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   let { data: username } = await supabase
     .from("profiles")
-    .select("username,avatar")
+    .select("id,username,avatar,full_name,bio,work,verification")
     .eq(`username`, params.slug.toLowerCase())
     .limit(1)
     .single();
+
 
   let { data: board } = await supabase
     .from("boards")
     .select("background,title,id,username")
     .eq(`username`, params.slug.toLowerCase());
+
 
   return (
     <div>
@@ -24,12 +30,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <Slug
           params={{
             slug: params.slug,
-            full_name: `Tasamim Official`,
-            verification: true,
-            bio: `Looking to start an interesting project 👋`,
-            work: `3D Artist / Generalist`,
+            full_name: username.full_name,
+            verification: username.verification,
+            bio: username.bio,
+            work: username.work,
             boar: board,
             avatar: username.avatar,
+            followerId: user?.id, // معرف المستخدم المتابع
+            followingId: username.id, // معرف المستخدم المتبوع
           }}
         />
       ) : (

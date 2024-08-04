@@ -5,6 +5,8 @@ import { title } from "@/components/primitives";
 import CardProf from "@/components/ui/CardProf";
 import { createClient } from "@/utils/supabase/server";
 import PopoverUi from "@/components/ui/PopoverUi";
+import IsFollowSmall from "@/components/ui/isFollowSmall";
+import Isloved from "@/components/ui/isloved";
 
 const SectionBady = dynamic(() => import("@/components/ui/SectionBady"), {
   ssr: true,
@@ -18,24 +20,27 @@ const Previous = dynamic(() => import("@/components/ui/Previous"), {
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   let { data: board } = await supabase
     .from("boards")
     .select(
-      `id,created_at,boards,views,tags,background,biography,loves,title,profiles (username,full_name,avatar,bio),loves (love,board)`,
+      `id,created_at,boards,views,tags,background,biography,loves,title,profiles (id,username,full_name,avatar,bio),loves (love,board)`,
     )
     .eq("id", params.slug)
     .single();
 
   // إذا كانت profiles مصفوفة
   const profile: any = board?.profiles;
-  const follow: any = board?.loves;
+  const loves: any = board?.loves;
 
   return (
     <main
       className={`w-full flex justify-center items-center flex-1 flex-col gap-5 tracking-widest`}
     >
-      <div className="w-full flex justify-start items-center max-w-4xl text-left">
+      <div className="w-full flex justify-start items-center max-w-4xl text-left z-10">
         <h1 className="text-3xl font-medium" dir="auto">
           {board?.title}
         </h1>
@@ -49,48 +54,20 @@ export default async function Page({ params }: { params: { slug: string } }) {
           <PopoverUi
             avatar={profile?.avatar}
             bio={profile?.bio}
+            followerId={user?.id}
+            followingId={profile?.id}
             full_name={profile?.full_name}
+            userId={user?.id}
             username={profile?.username}
           />
-          <Button
-            className={"bg-transparent text-foreground border-default-200"}
-            color="primary"
-            radius="full"
-            size="sm"
-            variant={"bordered"}
-          >
-            Unfollow
-          </Button>
+          <IsFollowSmall followerId={user?.id} followingId={profile?.id} />
         </div>
         <div
           className={title({
             className: `flex justify-center items-center gap-3 max-sm:hidden`,
           })}
         >
-          <Button
-            itemScope
-            aria-label="Like"
-            className="p-2"
-            color="primary"
-            radius="full"
-            variant="solid"
-          >
-            <svg
-              className="size-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.3}
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <b>{follow.length}</b>
-          </Button>
+          <Isloved />
           <Button
             isIconOnly
             aria-label="Like"
@@ -115,11 +92,16 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </Button>
         </div>
       </section>
-      <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
+      <section className="flex justify-center items-center gap-3 w-full max-w-4xl z-0">
         <SectionBady boards={board?.boards} />
       </section>
       <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
-        <CardProf />
+        <CardProf
+          avatar={profile?.avatar}
+          bio={profile?.bio}
+          full_name={profile?.full_name}
+          username={profile?.username}
+        />
       </section>
       <section className="flex justify-between items-center gap-3 w-full max-w-4xl z-0">
         <Previous />

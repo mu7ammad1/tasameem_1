@@ -5,7 +5,6 @@ import { Avatar } from "@nextui-org/avatar";
 import { Link } from "@nextui-org/link";
 
 import { createClient } from "@/utils/supabase/client";
-import { Button } from "@nextui-org/button";
 
 export default function CardBody_Page({ sss }: any) {
   async function getUserData(username: string) {
@@ -27,7 +26,6 @@ export default function CardBody_Page({ sss }: any) {
       return null; // أو يمكنك معالجة الخطأ بطريقة أخرى
     }
   }
-
 
   return (
     <div className="gap-3 grid grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-2 w-full mt-5 max-lg:grid-cols-3">

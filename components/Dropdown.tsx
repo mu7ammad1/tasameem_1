@@ -34,7 +34,7 @@ export default function Dropdowns({ user, ss }: any) {
           <Avatar
             isBordered
             as="button"
-            className="transition-transform object-cover"
+            className="transition-transform object-fill"
             src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${ss?.avatar}`}
           />
         </DropdownTrigger>

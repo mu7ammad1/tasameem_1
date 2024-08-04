@@ -3,7 +3,7 @@ import { Image } from "@nextui-org/image";
 
 export default function SectionBady({ boards }: any) {
   return (
-    <div className="flex flex-col justify-center items-center w-full gap-4">
+    <div className="flex flex-col justify-center items-center w-full gap-4 z-10">
       {boards?.map((item: any, index: any) => (
         <div key={index} className="w-full">
           {item.type === "text" && (
@@ -14,11 +14,13 @@ export default function SectionBady({ boards }: any) {
             </p>
           )}
           {item.type === "image" && (
-            <Image
-              alt={`Image ${index}`}
-              className="w-full"
-              src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/boards/${item.content}`}
-            />
+            <div className="w-full flex justify-center items-center">
+              <Image
+                alt={`Image ${index}`}
+                className="w-full h-full cursor-pointer"
+                src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/boards/${item.content}`}
+              />
+            </div>
           )}
         </div>
       ))}

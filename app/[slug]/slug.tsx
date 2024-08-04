@@ -1,10 +1,10 @@
-"use client";
 import { Image } from "@nextui-org/image";
 import { Button } from "@nextui-org/button";
-import { Tabs, Tab } from "@nextui-org/tabs";
+import { Avatar } from "@nextui-org/avatar";
 
 import { title } from "@/components/primitives";
 import CardBody_Page from "@/components/ui/CardBody";
+import IsFollow from "@/components/ui/isFollow";
 export default function Slug({
   params,
 }: {
@@ -16,18 +16,18 @@ export default function Slug({
     work: string;
     boar: any;
     avatar: string;
+    followingId: any;
+    followerId: any;
   };
 }) {
   return (
     <main
       className={`w-full flex justify-center items-center flex-1 flex-col tracking-widest`}
     >
-      <Image
-        alt="NextUI hero Image"
-        className="rounded-full object-cover"
-        height={100}
+      <Avatar
+        isBordered
+        className={`w-[100px] h-[100px]`}
         src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${params.avatar}`}
-        width={100}
       />
       <div
         className={title({
@@ -60,81 +60,66 @@ export default function Slug({
         <div className={`flex justify-center items-center gap-5`}>
           <p className={`text-sm mb-2 tracking-wide`}>{params.bio}</p>
         </div>
-        <Button
-          className="leading-8 tracking-widest mt-2 w-40 font-medium"
-          color="default"
-        >
-          Follow
-        </Button>
+        <IsFollow
+          followerId={params.followerId}
+          followingId={params.followingId}
+        />
       </div>
       <div
         className={`w-full flex justify-center items-center gap-7 mt-10 *:text-sm`}
       >
         <div className="flex w-full flex-col justify-center items-center">
-          <Tabs color="primary" variant="underlined">
-            <Tab
-              key="photos"
-              title={
-                <div className="flex items-center space-x-2">
-                  <svg
-                    aria-hidden="true"
-                    className="lucide lucide-library"
-                    fill="none"
-                    focusable="false"
-                    height="20"
-                    role="presentation"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="m16 6 4 14" />
-                    <path d="M12 6v14" />
-                    <path d="M8 8v12" />
-                    <path d="M4 4v16" />
-                  </svg>
-                  <span>Boards</span>
-                </div>
-              }
+          <Button className="flex items-center space-x-2" variant="flat">
+            <svg
+              aria-hidden="true"
+              className="lucide lucide-library"
+              fill="none"
+              focusable="false"
+              height="20"
+              role="presentation"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <div>
-                <CardBody_Page avatar={params.avatar} sss={params.boar} />
-              </div>
-            </Tab>
-            <Tab
-              key="videos"
-              title={
-                <div className="flex items-center space-x-2">
-                  <svg
-                    aria-hidden="true"
-                    className="size-6"
-                    fill="none"
-                    focusable="false"
-                    height="20"
-                    role="presentation"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    viewBox="0 0 24 24"
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+              <path d="m16 6 4 14" />
+              <path d="M12 6v14" />
+              <path d="M8 8v12" />
+              <path d="M4 4v16" />
+            </svg>
+            <span>Boards</span>
+          </Button>
+          <div>
+            <CardBody_Page avatar={params.avatar} sss={params.boar} />
+          </div>
+          <div className="flex items-center space-x-2">
+            <svg
+              aria-hidden="true"
+              className="size-6"
+              fill="none"
+              focusable="false"
+              height="20"
+              role="presentation"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
 
-                  <span>About</span>
-                </div>
-              }
-            />
-          </Tabs>
+            <span>About</span>
+          </div>
         </div>
       </div>
     </main>

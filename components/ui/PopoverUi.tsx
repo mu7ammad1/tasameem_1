@@ -4,7 +4,14 @@ import { User } from "@nextui-org/user";
 
 import { UserTwitterCard } from "./UserTwitterCard";
 
-export default function PopoverUi({ avatar, username, full_name, bio }: any) {
+export default function PopoverUi({
+  avatar,
+  username,
+  full_name,
+  bio,
+  followerId,
+  followingId,
+}: any) {
   return (
     <Popover showArrow placement="bottom">
       <PopoverTrigger>
@@ -22,6 +29,8 @@ export default function PopoverUi({ avatar, username, full_name, bio }: any) {
         <UserTwitterCard
           avatar={avatar}
           bio={bio}
+          followerId={followerId}
+          followingId={followingId}
           full_name={full_name}
           username={username}
         />
