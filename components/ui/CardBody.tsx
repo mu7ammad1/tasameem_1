@@ -39,7 +39,7 @@ export default function CardBody_Page({ sss }: any) {
           </Chip>
           <CardFooter className="text-small justify-between">
             <b>{item.title}</b>
-            <Link href={`/${item.username}`}>
+            <Link href={`/${item.profiles.username}`}>
               <Avatar
                 className={`w-5 h-5`}
                 src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${item.profiles.avatar}`}

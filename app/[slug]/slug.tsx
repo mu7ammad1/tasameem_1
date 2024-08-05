@@ -93,7 +93,7 @@ export default function Slug({
             <span>Boards</span>
           </Button>
           <div>
-            <CardBody_Page avatar={params.avatar} sss={params.boar} />
+            <CardBody_Page sss={params.boar} />
           </div>
           <div className="flex items-center space-x-2">
             <svg

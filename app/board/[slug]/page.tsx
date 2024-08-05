@@ -27,14 +27,13 @@ export default async function Page({ params }: { params: { slug: string } }) {
   let { data: board } = await supabase
     .from("boards")
     .select(
-      `id,created_at,boards,views,tags,background,biography,loves,title,profiles (id,username,full_name,avatar,bio),loves (love,board)`,
+      `id,created_at,boards,tags,background,title,profiles (id,username,full_name,avatar,bio),loves (love,board)`,
     )
     .eq("id", params.slug)
     .single();
 
   // إذا كانت profiles مصفوفة
   const profile: any = board?.profiles;
-  const loves: any = board?.loves;
 
   return (
     <main
@@ -67,7 +66,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             className: `flex justify-center items-center gap-3 max-sm:hidden`,
           })}
         >
-          <Isloved followingId={user?.id} isboard={`14`} />
+          <Isloved followingId={user?.id} isboard={board?.id} />
           <Button
             isIconOnly
             aria-label="Like"

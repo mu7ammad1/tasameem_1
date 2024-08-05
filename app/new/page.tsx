@@ -1,15 +1,40 @@
 "use client";
-import { Button } from "@nextui-org/button";
-import { Textarea } from "@nextui-org/input";
+import { Input, Textarea } from "@nextui-org/input";
 import {
   ChevronDownCircleIcon,
   ChevronUpCircleIcon,
   CircleMinus,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+  DropdownSection,
+} from "@nextui-org/react";
+
+import { createClient } from "@/utils/supabase/client";
 
 export default function Block() {
   const [blocks, setBlocks] = useState<{ type: string; content: any }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const [selectedKey, setSelectedKey]: any = useState(new Set(["Design"]));
+  const [selectedKeys, setSelectedKeys]: any = React.useState(
+    new Set(["Design"]),
+  );
+
+  const selectedValue = React.useMemo(
+    () => Array.from(selectedKey).join(", ").replaceAll("_", " "),
+    [selectedKey],
+  );
+  const selectedValues = React.useMemo(
+    () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
+    [selectedKeys],
+  );
 
   const handleInsertTextBlock = (index: number) => {
     const newBlock = { type: "text", content: "" };
@@ -24,7 +49,7 @@ export default function Block() {
   const handleInsertImageBlock = (index: number) => {
     const newBlock = {
       type: "image",
-      content: "https://via.placeholder.com/150",
+      content: "https://via.placeholder.com/1024",
     };
 
     setBlocks((prevBlocks) => [
@@ -41,31 +66,6 @@ export default function Block() {
       newBlocks[index].content = newContent;
     }
     setBlocks(newBlocks);
-  };
-
-  const handleImageChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    const files = event.target.files;
-
-    if (files) {
-      const newBlocks = [...blocks];
-      const newBlocksToAdd = Array.from(files).map((file) => {
-        const newURL = URL.createObjectURL(file);
-
-        return {
-          type: "image",
-          content: newURL,
-        };
-      });
-
-      setBlocks((prevBlocks) => [
-        ...prevBlocks.slice(0, index + 1),
-        ...newBlocksToAdd,
-        ...prevBlocks.slice(index + 1),
-      ]);
-    }
   };
 
   const handleAddNewImage = (
@@ -109,26 +109,181 @@ export default function Block() {
     }
   };
 
+  const handleSave = useCallback(async () => {
+    // Filter out empty or placeholder image blocks
+    const filteredBlocks = blocks.filter(
+      (block) =>
+        (block.type === "text" && block.content.trim() !== "") ||
+        (block.type === "image" &&
+          block.content !== "https://via.placeholder.com/1024"),
+    );
+
+    // Handle cases with different messages
+    if (blocks.length === 0) {
+      setMessage("لا توجد بلوكات لحفظها.");
+
+      return;
+    }
+
+    if (filteredBlocks.length === 0) {
+      const hasTextBlock = blocks.some(
+        (block) => block.type === "text" && block.content.trim() === "",
+      );
+      const hasPlaceholderImage = blocks.some(
+        (block) =>
+          block.type === "image" &&
+          block.content === "https://via.placeholder.com/1024",
+      );
+
+      if (hasTextBlock) {
+        setMessage("يوجد بلوكات نصية فارغة.");
+      } else if (hasPlaceholderImage) {
+        setMessage("يوجد روابط صور غير متاحة.");
+      } else {
+        setMessage("لا توجد بلوكات صالحة للحفظ.");
+      }
+
+      return;
+    }
+
+    setIsLoading(true);
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { error } = await supabase.from("boards").upsert([
+      {
+        boards: filteredBlocks,
+        background: "original-d272f0bf5b00ca45764760a62b9bafb4",
+        user: user?.id,
+        tags: `["Graphic Design"]`,
+        categories: `Graphic Design`
+      },
+    ]);
+
+    setIsLoading(false);
+    if (error) {
+      console.error("Error inserting blocks:", error);
+      setMessage("خطأ في حفظ البلوكات. حاول مرة أخرى.");
+    } else {
+      console.log("Blocks inserted successfully");
+      setBlocks([]); // Clear blocks after successful save
+      setMessage("تم حفظ البلوكات بنجاح.");
+    }
+  }, [blocks]);
+
+  const categories: any = [
+    "Design",
+    "Architecture",
+    "Art Direction",
+    "Branding",
+    "Fashion",
+    "Graphic Design",
+    "Illustration",
+    "Industrial Design",
+    "Interaction Design",
+    "Motion Graphics",
+    "Photography",
+    "UI/UX",
+    "Web Design",
+    "3D Art",
+    "3D Modeling",
+    "3D Motion",
+    "Advertising",
+    "Advertising Photography",
+    "Animation",
+    "App Design",
+    "Apparel",
+    "AR/VR",
+    "Architecture Concept",
+    "Architecture Photography",
+    "Architecture Visualization",
+    "Automotive Design",
+    "Beauty Photography",
+    "Calligraphy",
+    "CGI",
+    "Character Design",
+    "Cinematography",
+    "Collage",
+    "Coloring",
+    "Comic",
+    "Concept Art",
+    "Copywriting",
+    "Costume Design",
+    "Crafts",
+    "Creative Direction",
+    "Culinary Arts",
+    "Digital Art",
+    "Digital Painting",
+    "Directing",
+    "Drawing",
+    "Editing",
+    "Editorial Design",
+    "Education",
+    "Environmental Graphics",
+    "Exhibition Design",
+    "Fashion Design",
+    "Fashion Illustration",
+    "Fashion Photography",
+    "Fashion Retouching",
+    "Fashion Styling",
+    "Film",
+    "Fine Arts",
+    "Floral Design",
+    "Game Design",
+    "Graphic Novel",
+    "Hand Lettering",
+    "Infographics",
+    "Interior Design",
+    "Jewelry Design",
+    "Landscape Architecture",
+    "Letterpress",
+    "Marketing",
+    "Motion Design",
+    "Product Design",
+    "Sculpture",
+    "Social Media Design",
+    "Street Art",
+    "Tattoo Art",
+    "Textile Design",
+    "Typography",
+    "Video Production",
+    "Web Development",
+    "Web Illustration",
+  ];
+
   return (
     <main className="w-full flex justify-center">
       <section className="w-full max-w-5xl">
         {blocks.map((block, index) => (
           <div key={index}>
             <div className="w-full flex justify-center items-center my-3">
-              <Button
-                style={{ marginRight: "10px" }}
-                variant="bordered"
-                onClick={() => handleInsertTextBlock(index)}
-              >
-                Text
-              </Button>
-              <Button
-                style={{ marginRight: "10px" }}
-                variant="bordered"
-                onClick={() => handleInsertImageBlock(index)}
-              >
-                Image
-              </Button>
+              <Dropdown backdrop="blur">
+                <DropdownTrigger>
+                  <Button variant="flat">Open Menu one</Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Dynamic Actions">
+                  <DropdownItem key="new">
+                    <Button
+                      style={{ marginRight: "10px" }}
+                      variant="bordered"
+                      onClick={() => handleInsertTextBlock(index)}
+                    >
+                      Text
+                    </Button>
+                  </DropdownItem>
+                  <DropdownItem key="copy">
+                    <Button
+                      style={{ marginRight: "10px" }}
+                      variant="bordered"
+                      onClick={() => handleInsertImageBlock(index)}
+                    >
+                      Image
+                    </Button>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </div>
             <div className="w-full flex gap-5">
               <div className="flex flex-col">
@@ -184,30 +339,34 @@ export default function Block() {
                   </div>
                 )}
                 {block.type === "image" && (
-                  <div>
+                  <div className="relative">
                     <img
                       alt={`uploaded-${index}`}
-                      className="object-contain"
+                      className="object-contain rounded-3xl"
                       src={block.content}
                     />
-                    <Button
-                      variant="bordered"
-                      onClick={() =>
-                        document
-                          .getElementById(`file-input-new-${index}`)
-                          ?.click()
-                      }
-                    >
-                      Add Image /Change
-                    </Button>
-                    <input
-                      multiple
-                      accept="image/*"
-                      id={`file-input-new-${index}`}
-                      style={{ display: "none" }}
-                      type="file"
-                      onChange={(e) => handleAddNewImage(e, index)}
-                    />
+                    <div className="py-4 top-0 left-4 z-50 absolute h-full">
+                      <Button
+                        className="top-4 left-0 z-50 sticky"
+                        color="default"
+                        variant="solid"
+                        onClick={() =>
+                          document
+                            .getElementById(`file-input-new-${index}`)
+                            ?.click()
+                        }
+                      >
+                        Add Image /Change
+                      </Button>
+                      <input
+                        multiple
+                        accept="image/*"
+                        id={`file-input-new-${index}`}
+                        style={{ display: "none" }}
+                        type="file"
+                        onChange={(e) => handleAddNewImage(e, index)}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
@@ -216,23 +375,124 @@ export default function Block() {
         ))}
         <div>
           <div className="w-full flex justify-center items-center my-3">
-            <Button
-              style={{ marginRight: "10px" }}
-              variant="bordered"
-              onClick={() => handleInsertTextBlock(blocks.length)}
-            >
-              Text
-            </Button>
-            <Button
-              style={{ marginRight: "10px" }}
-              variant="bordered"
-              onClick={() => handleInsertImageBlock(blocks.length)}
-            >
-              Image
-            </Button>
+            <Dropdown backdrop="opaque">
+              <DropdownTrigger>
+                <Button variant="flat">Open Menu</Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Dynamic Actions">
+                <DropdownItem key="new">
+                  <Button
+                    style={{ marginRight: "10px" }}
+                    variant="bordered"
+                    onClick={() => handleInsertImageBlock(blocks.length)}
+                  >
+                    Image
+                  </Button>
+                </DropdownItem>
+                <DropdownItem key="copy">
+                  <Button
+                    style={{ marginRight: "10px" }}
+                    variant="bordered"
+                    onClick={() => handleInsertTextBlock(blocks.length)}
+                  >
+                    Text
+                  </Button>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
         </div>
-        {JSON.stringify(blocks, null, 2 | 4)}
+        <Button
+          className="btn-save"
+          disabled={isLoading}
+          variant="flat"
+          onClick={handleSave}
+        >
+          {isLoading ? "Saving..." : "Save"}
+        </Button>
+        <section className="w-full max-w-5xl">
+          {message && <div className="alert alert-warning">{message}</div>}
+          {/* باقي الكود هنا */}
+        </section>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button className="capitalize" variant="bordered">
+              {selectedValue}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            disallowEmptySelection
+            aria-label="Single selection example"
+            itemClasses={{
+              base: [
+                "rounded-md",
+                "text-default-500",
+                "transition-opacity",
+                "data-[hover=true]:text-foreground",
+                "data-[hover=true]:bg-default-100",
+                "dark:data-[hover=true]:bg-default-50",
+                "data-[selectable=true]:focus:bg-default-50",
+                "data-[pressed=true]:opacity-70",
+                "data-[focus-visible=true]:ring-default-500",
+              ],
+            }}
+            selectedKeys={selectedKey}
+            selectionMode="single"
+            variant="flat"
+            onSelectionChange={setSelectedKey}
+          >
+            <DropdownSection
+              aria-label="Example with disabled actions"
+              className="w-full h-60 overflow-y-auto overflow-x-hidden px-2"
+            >
+              <DropdownItem
+                key="profile"
+                isReadOnly
+                className="h-14 gap-0 opacity-100 w-full p-0 m-0"
+              >
+                <Input placeholder="Search Puplar..." type="search" />{" "}
+              </DropdownItem>
+              {categories.map((category: string) => (
+                <DropdownItem key={category}>{category}</DropdownItem>
+              ))}
+            </DropdownSection>
+          </DropdownMenu>
+        </Dropdown>
+        {selectedValues}
+        <Dropdown>
+          <DropdownTrigger>
+            <Button className="capitalize" variant="bordered">
+              {selectedValues}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            disallowEmptySelection
+            aria-label="Multiple selection example"
+            className="w-full h-60"
+            closeOnSelect={false}
+            selectedKeys={selectedKeys}
+            selectionMode="multiple"
+            variant="flat"
+            onSelectionChange={setSelectedKeys}
+          >
+            <DropdownSection
+              aria-label="Example with disabled actions"
+              className="w-full h-60 overflow-y-auto overflow-x-hidden px-2"
+            >
+              <DropdownItem
+                key="profile"
+                isReadOnly
+                className="h-14 gap-0 opacity-100 w-full p-0 m-0"
+              >
+                <Input placeholder="Search Puplar..." type="search" />{" "}
+              </DropdownItem>
+              {categories.map((category: string) => (
+                <DropdownItem key={category}>{category}</DropdownItem>
+              ))}
+            </DropdownSection>
+          </DropdownMenu>
+        </Dropdown>
+        <pre className="text-left">{JSON.stringify(blocks, null, 2)}</pre>
       </section>
     </main>
   );
