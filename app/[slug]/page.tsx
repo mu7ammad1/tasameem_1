@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   let { data: board } = await supabase
     .from("boards")
-    .select("background,title,id,username")
+    .select("background,title,id,username,profiles(avatar),loves(id)")
     .eq(`username`, params.slug.toLowerCase());
 
 

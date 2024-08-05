@@ -2,16 +2,16 @@ import { Input } from "@nextui-org/input";
 
 import { subtitle } from "@/components/primitives";
 import { SearchIcon } from "@/components/icons";
-import Tasamim from "@/components/ui/tasamim";
 import { createClient } from "@/utils/supabase/server";
 import BTY from "@/components/ui/BTY";
+import Tasamim from "@/components/ui/tasamim";
 
 export default async function Home() {
   const supabase = createClient();
 
   let { data: board } = await supabase
     .from("boards")
-    .select("background,title,id,username");
+    .select("background,title,id,username,profiles(avatar),loves(id)");
 
   return (
     <section className="flex flex-col items-center justify-center gap-5 py-10 w-full">

@@ -5,14 +5,12 @@ import { Chip } from "@nextui-org/react";
 
 import { createClient } from "@/utils/supabase/client";
 
-export default function Isloved() {
+export default function Isloved({ isboard, followingId }: any) {
   const supabase = createClient();
   const [isFollowing, setIsFollowing] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [lovesCount, setLovesCount] = useState<number>(0);
 
-  const followingId = `981dd070-e4f6-49f8-a0e1-a47675f07002`;
-  const isboard: any = `14`;
 
   useEffect(() => {
     const checkFollowStatus = async () => {

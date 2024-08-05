@@ -1,9 +1,13 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Input } from "@nextui-org/input";
+import Link from "next/link";
 
 import { createClient } from "@/utils/supabase/server";
 
 import { SubmitButton } from "./submit-button";
+import GoogleSVG from "./GoogleSVG";
+import GithubSVG from "./GithubSVG";
 
 export default async function Login({
   searchParams,
@@ -104,52 +108,64 @@ export default async function Login({
   } = await supabase.auth.getUser();
 
   return !user ? (
-    <div className="flex flex-row-reverse w-full px-8 justify-center gap-2 items-start mt-16 h-screen">
-      <form className="flex flex-col w-2/5 justify-center gap-2 text-foreground">
-        <label className="text-md text-right" htmlFor="email">
-          بريد اكتروني
-        </label>
-        <input
-          className="rounded-md px-4 py-2 bg-inherit border mb-6"
-          name="email"
-          placeholder="you@example.com"
-        />
-        <label className="text-md text-right" htmlFor="password">
-          كلمة السر
-        </label>
-        <input
-          className="rounded-md px-4 py-2 bg-inherit border mb-6"
-          name="password"
-          placeholder="••••••••"
-          type="password"
-        />
+    <div className="flex flex-row-reverse w-full px-8 justify-center gap-2 items-start h-screen">
+      <form className="flex flex-col w-2/5 max-sm:w-full max-md:w-3/4 max-lg:w-4/6 justify-center gap-2 text-foreground">
+        <div className="flex flex-col w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+          <Input
+            isClearable
+            color="default"
+            label="Email"
+            name="email"
+            placeholder="Enter your Email"
+            type="email"
+            variant={"bordered"}
+          />
+          <Input
+            isClearable
+            color="default"
+            label="Password"
+            name="password"
+            placeholder="Enter your Password"
+            type="password"
+            variant={"bordered"}
+          />
+          <span>
+            <Link className="text-blue-500" href="/hrml">
+              I forget Password
+            </Link>
+          </span>
+        </div>
         <SubmitButton
-          className="bg-green-500 rounded-md px-4 py-2 text-foreground mb-2"
           formAction={signIn}
           pendingText="Signing In..."
+          variant={"flat"}
         >
           Sign In
         </SubmitButton>
         <SubmitButton
-          className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
           formAction={signUp}
           pendingText="Signing Up..."
+          variant={"flat"}
         >
-          Sign Up
+          تسجيل حساب جديد
         </SubmitButton>
         <div className={`flex justify-center items-center gap-3 *:w-full`}>
           <SubmitButton
-            className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2 flex justify-center items-center gap-3"
+            color="default"
             formAction={signInWithGithub}
             pendingText="Signing with Github...."
+            variant="bordered"
           >
+            <GithubSVG />
             <p>Github</p>
           </SubmitButton>
           <SubmitButton
-            className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2 flex justify-center items-center gap-3"
+            color="default"
             formAction={signInWithGoogle}
             pendingText="Signing with Google..."
+            variant="bordered"
           >
+            <GoogleSVG />
             <p>Google</p>
           </SubmitButton>
         </div>
@@ -159,7 +175,6 @@ export default async function Login({
           </p>
         )}
       </form>
-      <form className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground" />
     </div>
   ) : (
     redirect(`/`)

@@ -3,6 +3,7 @@ import { Button } from "@nextui-org/button";
 import React, { useEffect, useState } from "react";
 
 import { createClient } from "@/utils/supabase/client";
+import { Loader } from "lucide-react";
 
 export default function IsFollow({ followerId, followingId }: any) {
   const supabase = createClient();
@@ -55,7 +56,16 @@ export default function IsFollow({ followerId, followingId }: any) {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <p>
+        <Loader
+          absoluteStrokeWidth
+          className="animate-spin"
+          size={28}
+          strokeWidth={2.25}
+        />
+      </p>
+    );
   }
 
   if (followerId === followingId) {

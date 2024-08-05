@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Metadata } from "next";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
+import { Loader } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import NavbarCom from "@/components/navbar";
@@ -22,7 +23,16 @@ export const metadata: Metadata = {
 
 const Footer = dynamic(() => import("@/components/ui/footer"), {
   ssr: false,
-  loading: () => <p>Loading...</p>,
+  loading: () => (
+    <p>
+      <Loader
+        absoluteStrokeWidth
+        className="animate-spin"
+        size={28}
+        strokeWidth={2.25}
+      />
+    </p>
+  ),
 });
 
 export default async function RootLayout({

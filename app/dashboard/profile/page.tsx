@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
+import { Input } from "@nextui-org/input";
 
 import { createClient } from "@/utils/supabase/server";
-import { SubmitButton } from "@/app/signup/submit-button";
+import { SubmitButton } from "@/app/login/submit-button";
 
 export default async function Profile({
   searchParams,
@@ -52,7 +53,6 @@ export default async function Profile({
     .limit(1)
     .single();
 
-
   return (
     <div className="flex justify-center items-start">
       <form className="flex flex-col w-2/5 justify-center gap-2 text-foreground">
@@ -69,7 +69,6 @@ export default async function Profile({
           placeholder="بريد اكتروني"
           type="text"
         />
-
         <label className="text-md text-right" htmlFor="password">
           اسمك
         </label>

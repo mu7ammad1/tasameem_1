@@ -67,7 +67,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             className: `flex justify-center items-center gap-3 max-sm:hidden`,
           })}
         >
-          <Isloved />
+          <Isloved followingId={user?.id} isboard={`14`} />
           <Button
             isIconOnly
             aria-label="Like"

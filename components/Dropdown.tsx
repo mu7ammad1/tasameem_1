@@ -8,10 +8,10 @@ import {
   DropdownItem,
 } from "@nextui-org/dropdown";
 import { useRouter } from "next/navigation";
+import { Button } from "@nextui-org/button";
+import Link from "next/link";
 
 import { createClient } from "@/utils/supabase/client";
-
-import ModalPlacement from "./ui/modalPlacement";
 
 export default function Dropdowns({ user, ss }: any) {
   const router = useRouter(); // Initialize the router
@@ -62,6 +62,8 @@ export default function Dropdowns({ user, ss }: any) {
       </Dropdown>
     </div>
   ) : (
-    <ModalPlacement />
+    <Link href="/login">
+      <Button className="max-w-fit">تسجيل دخول</Button>
+    </Link>
   );
 }
