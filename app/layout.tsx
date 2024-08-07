@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
 import { Loader } from "lucide-react";
+import { redirect } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 import NavbarCom from "@/components/navbar";
@@ -47,7 +48,7 @@ export default async function RootLayout({
 
   let { data: username } = await supabase
     .from("profiles")
-    .select("username,avatar")
+    .select("username,avatar,full_name")
     .eq(`id`, user?.id)
     .limit(1)
     .single();

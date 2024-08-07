@@ -29,6 +29,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     .select(
       `id,created_at,boards,tags,background,title,profiles (id,username,full_name,avatar,bio),loves (love,board)`,
     )
+    .eq("draft", false)
     .eq("id", params.slug)
     .single();
 

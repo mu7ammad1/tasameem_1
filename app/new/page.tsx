@@ -13,6 +13,7 @@ import {
   DropdownItem,
   Button,
   DropdownSection,
+  Image,
 } from "@nextui-org/react";
 
 import { createClient } from "@/utils/supabase/client";
@@ -21,6 +22,7 @@ export default function Block() {
   const [blocks, setBlocks] = useState<{ type: string; content: any }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>("");
 
   const [selectedKey, setSelectedKey]: any = useState(new Set(["Design"]));
   const [selectedKeys, setSelectedKeys]: any = React.useState(
@@ -151,14 +153,22 @@ export default function Block() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
+    const tagsArray = selectedValues.split(", ").map((tag) => tag.trim());
+    // Determine the background image
+    let backgroundImage = "original-d272f0bf5b00ca45764760a62b9bafb4"; // default background
+    const imageBlock = filteredBlocks.find((block) => block.type === "image");
 
-    const { error } = await supabase.from("boards").upsert([
+    if (imageBlock) {
+      backgroundImage = imageBlock.content;
+    }
+    const { error } = await supabase.from("boards").insert([
       {
+        title: title,
         boards: filteredBlocks,
-        background: "original-d272f0bf5b00ca45764760a62b9bafb4",
+        background: backgroundImage,
         user: user?.id,
-        tags: `["Graphic Design"]`,
-        categories: `Graphic Design`
+        tags: tagsArray,
+        categories: selectedValue,
       },
     ]);
 
@@ -254,245 +264,302 @@ export default function Block() {
   ];
 
   return (
-    <main className="w-full flex justify-center">
-      <section className="w-full max-w-5xl">
-        {blocks.map((block, index) => (
-          <div key={index}>
+    <main className="w-full flex flex-col justify-center">
+      <section className="w-full flex justify-center">
+        <Input
+          isClearable
+          isRequired
+          className="w-2/3 font-black *:*:*:*:text-4xl *:*:*:*:font-medium"
+          color="default"
+          name="title"
+          placeholder="Give me a title"
+          type="text"
+          value={title}
+          variant={"underlined"}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </section>
+      <section className="w-full flex justify-center">
+        <section className="w-full max-w-5xl">
+          {blocks.map((block, index) => (
+            <div key={index}>
+              <div className="w-full flex justify-center items-center my-3">
+                <Dropdown backdrop="blur" placement="top">
+                  <DropdownTrigger>
+                    <Button variant="flat">فتح القائمة</Button>
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="Dynamic Actions">
+                    <DropdownItem key="copy">
+                      <Button
+                        style={{ marginRight: "10px" }}
+                        variant="bordered"
+                        onClick={() => handleInsertImageBlock(index)}
+                      >
+                        صور
+                      </Button>
+                    </DropdownItem>
+                    <DropdownItem key="new">
+                      <Button
+                        style={{ marginRight: "10px" }}
+                        variant="bordered"
+                        onClick={() => handleInsertTextBlock(index)}
+                      >
+                        نصوص
+                      </Button>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+              <div className="w-full flex gap-5">
+                <div className="w-full">
+                  {block.type === "text" && (
+                    <div>
+                      <Textarea
+                        className="z-10 h-full w-full text-6xl font-semibold leading-loose whitespace-normal bg-background"
+                        dir="auto"
+                        placeholder="Edit text"
+                        style={{
+                          fontSize: "28px",
+                          lineHeight: "2rem",
+                        }}
+                        value={block.content}
+                        onChange={(e) =>
+                          handleContentChange(index, e.target.value)
+                        }
+                      />
+                      <div className="flex flex-col">
+                        <button
+                          className="p-0 m-0 sticky top-0"
+                          onClick={() => handleDeleteBlock(index)}
+                        >
+                          <CircleMinus
+                            absoluteStrokeWidth
+                            size={20}
+                            strokeWidth={1.75}
+                          />
+                        </button>
+                        <button
+                          className="p-0 m-0 sticky top-5"
+                          disabled={index === 0}
+                          onClick={() => moveBlock(index, "up")}
+                        >
+                          <ChevronUpCircleIcon
+                            absoluteStrokeWidth
+                            size={20}
+                            strokeWidth={1.75}
+                          />
+                        </button>
+                        <button
+                          className="p-0 m-0 sticky top-10"
+                          disabled={index === blocks.length - 1}
+                          onClick={() => moveBlock(index, "down")}
+                        >
+                          <ChevronDownCircleIcon
+                            absoluteStrokeWidth
+                            size={20}
+                            strokeWidth={1.75}
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {block.type === "image" && (
+                    <div className="relative flex justify-center w-full">
+                      <Image alt={`uploaded-${index}`} src={block.content} />
+                      <div className="py-4 top-0 left-4 z-50 absolute h-full">
+                        <div className="top-4 left-0 z-50 sticky flex justify-between">
+                          <Button
+                            isIconOnly
+                            className="top-4 left-0 z-50 sticky rounded-full"
+                            color="default"
+                            variant="solid"
+                            onClick={() =>
+                              document
+                                .getElementById(`file-input-new-${index}`)
+                                ?.click()
+                            }
+                          >
+                            Add
+                          </Button>
+                          <input
+                            multiple
+                            accept="image/*"
+                            id={`file-input-new-${index}`}
+                            style={{ display: "none" }}
+                            type="file"
+                            onChange={(e) => handleAddNewImage(e, index)}
+                          />
+                          <Button
+                            isIconOnly
+                            className="top-4 left-0 z-50 sticky rounded-full"
+                            color="default"
+                            variant="solid"
+                            onClick={() => handleDeleteBlock(index)}
+                          >
+                            <CircleMinus
+                              absoluteStrokeWidth
+                              size={20}
+                              strokeWidth={1.75}
+                            />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            className="top-4 left-0 z-50 sticky rounded-full"
+                            color="default"
+                            disabled={index === 0}
+                            variant="solid"
+                            onClick={() => moveBlock(index, "up")}
+                          >
+                            <ChevronUpCircleIcon
+                              absoluteStrokeWidth
+                              size={20}
+                              strokeWidth={1.75}
+                            />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            className="top-4 left-0 z-50 sticky rounded-full"
+                            color="default"
+                            disabled={index === blocks.length - 1}
+                            variant="solid"
+                            onClick={() => moveBlock(index, "down")}
+                          >
+                            <ChevronDownCircleIcon
+                              absoluteStrokeWidth
+                              size={20}
+                              strokeWidth={1.75}
+                            />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div>
             <div className="w-full flex justify-center items-center my-3">
-              <Dropdown backdrop="blur">
+              <Dropdown backdrop="opaque">
                 <DropdownTrigger>
-                  <Button variant="flat">Open Menu one</Button>
+                  <Button variant="flat">فتح القائمة</Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Dynamic Actions">
                   <DropdownItem key="new">
                     <Button
                       style={{ marginRight: "10px" }}
                       variant="bordered"
-                      onClick={() => handleInsertTextBlock(index)}
+                      onClick={() => handleInsertImageBlock(blocks.length)}
                     >
-                      Text
+                      صورة او مجموعة صور
                     </Button>
                   </DropdownItem>
                   <DropdownItem key="copy">
                     <Button
                       style={{ marginRight: "10px" }}
                       variant="bordered"
-                      onClick={() => handleInsertImageBlock(index)}
+                      onClick={() => handleInsertTextBlock(blocks.length)}
                     >
-                      Image
+                      نصوص
                     </Button>
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
-            <div className="w-full flex gap-5">
-              <div className="flex flex-col">
-                <button
-                  className="p-0 m-0 sticky top-0"
-                  onClick={() => handleDeleteBlock(index)}
-                >
-                  <CircleMinus
-                    absoluteStrokeWidth
-                    size={20}
-                    strokeWidth={1.75}
-                  />
-                </button>
-                <button
-                  className="p-0 m-0 sticky top-5"
-                  disabled={index === 0}
-                  onClick={() => moveBlock(index, "up")}
-                >
-                  <ChevronUpCircleIcon
-                    absoluteStrokeWidth
-                    size={20}
-                    strokeWidth={1.75}
-                  />
-                </button>
-                <button
-                  className="p-0 m-0 sticky top-10"
-                  disabled={index === blocks.length - 1}
-                  onClick={() => moveBlock(index, "down")}
-                >
-                  <ChevronDownCircleIcon
-                    absoluteStrokeWidth
-                    size={20}
-                    strokeWidth={1.75}
-                  />
-                </button>
-              </div>
-              <div className="w-full">
-                {block.type === "text" && (
-                  <div>
-                    <Textarea
-                      className="z-10 h-full w-full text-6xl font-semibold leading-loose whitespace-normal bg-background"
-                      dir="auto"
-                      placeholder="Edit text"
-                      style={{
-                        fontSize: "28px",
-                        lineHeight: "2rem",
-                      }}
-                      value={block.content}
-                      onChange={(e) =>
-                        handleContentChange(index, e.target.value)
-                      }
-                    />
-                  </div>
-                )}
-                {block.type === "image" && (
-                  <div className="relative">
-                    <img
-                      alt={`uploaded-${index}`}
-                      className="object-contain rounded-3xl"
-                      src={block.content}
-                    />
-                    <div className="py-4 top-0 left-4 z-50 absolute h-full">
-                      <Button
-                        className="top-4 left-0 z-50 sticky"
-                        color="default"
-                        variant="solid"
-                        onClick={() =>
-                          document
-                            .getElementById(`file-input-new-${index}`)
-                            ?.click()
-                        }
-                      >
-                        Add Image /Change
-                      </Button>
-                      <input
-                        multiple
-                        accept="image/*"
-                        id={`file-input-new-${index}`}
-                        style={{ display: "none" }}
-                        type="file"
-                        onChange={(e) => handleAddNewImage(e, index)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
-        ))}
-        <div>
-          <div className="w-full flex justify-center items-center my-3">
-            <Dropdown backdrop="opaque">
+          <div>
+            <Button
+              className="btn-save"
+              disabled={isLoading}
+              variant="flat"
+              onClick={handleSave}
+            >
+              {isLoading ? "Saving..." : "Save"}
+            </Button>
+            <section className="w-full max-w-3xl">
+              {message && <div className="alert alert-warning">{message}</div>}
+              {/* باقي الكود هنا */}
+            </section>
+            <Dropdown>
               <DropdownTrigger>
-                <Button variant="flat">Open Menu</Button>
+                <Button className="capitalize" variant="bordered">
+                  {selectedValue}
+                </Button>
               </DropdownTrigger>
-              <DropdownMenu aria-label="Dynamic Actions">
-                <DropdownItem key="new">
-                  <Button
-                    style={{ marginRight: "10px" }}
-                    variant="bordered"
-                    onClick={() => handleInsertImageBlock(blocks.length)}
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Single selection example"
+                itemClasses={{
+                  base: [
+                    "rounded-md",
+                    "text-default-500",
+                    "transition-opacity",
+                    "data-[hover=true]:text-foreground",
+                    "data-[hover=true]:bg-default-100",
+                    "dark:data-[hover=true]:bg-default-50",
+                    "data-[selectable=true]:focus:bg-default-50",
+                    "data-[pressed=true]:opacity-70",
+                    "data-[focus-visible=true]:ring-default-500",
+                  ],
+                }}
+                selectedKeys={selectedKey}
+                selectionMode="single"
+                variant="flat"
+                onSelectionChange={setSelectedKey}
+              >
+                <DropdownSection
+                  aria-label="Example with disabled actions"
+                  className="w-full h-60 overflow-y-auto overflow-x-hidden px-2"
+                >
+                  <DropdownItem
+                    key="profile"
+                    isReadOnly
+                    className="h-14 gap-0 opacity-100 w-full p-0 m-0"
                   >
-                    Image
-                  </Button>
-                </DropdownItem>
-                <DropdownItem key="copy">
-                  <Button
-                    style={{ marginRight: "10px" }}
-                    variant="bordered"
-                    onClick={() => handleInsertTextBlock(blocks.length)}
+                    <Input placeholder="Search Puplar..." type="search" />{" "}
+                  </DropdownItem>
+                  {categories.map((category: string) => (
+                    <DropdownItem key={category}>{category}</DropdownItem>
+                  ))}
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
+            {JSON.stringify(selectedValues)}
+            <Dropdown>
+              <DropdownTrigger>
+                <Button className="capitalize" variant="bordered">
+                  {selectedValues}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Multiple selection example"
+                className="w-full h-60"
+                closeOnSelect={false}
+                selectedKeys={selectedKeys}
+                selectionMode="multiple"
+                variant="flat"
+                onSelectionChange={setSelectedKeys}
+              >
+                <DropdownSection
+                  aria-label="Example with disabled actions"
+                  className="w-full h-60 overflow-y-auto overflow-x-hidden px-2"
+                >
+                  <DropdownItem
+                    key="profile"
+                    isReadOnly
+                    className="h-14 gap-0 opacity-100 w-full p-0 m-0"
                   >
-                    Text
-                  </Button>
-                </DropdownItem>
+                    <Input placeholder="Search Puplar..." type="search" />
+                  </DropdownItem>
+                  {categories.map((category: string) => (
+                    <DropdownItem key={category}>{category}</DropdownItem>
+                  ))}
+                </DropdownSection>
               </DropdownMenu>
             </Dropdown>
           </div>
-        </div>
-        <Button
-          className="btn-save"
-          disabled={isLoading}
-          variant="flat"
-          onClick={handleSave}
-        >
-          {isLoading ? "Saving..." : "Save"}
-        </Button>
-        <section className="w-full max-w-5xl">
-          {message && <div className="alert alert-warning">{message}</div>}
-          {/* باقي الكود هنا */}
         </section>
-        <Dropdown>
-          <DropdownTrigger>
-            <Button className="capitalize" variant="bordered">
-              {selectedValue}
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            disallowEmptySelection
-            aria-label="Single selection example"
-            itemClasses={{
-              base: [
-                "rounded-md",
-                "text-default-500",
-                "transition-opacity",
-                "data-[hover=true]:text-foreground",
-                "data-[hover=true]:bg-default-100",
-                "dark:data-[hover=true]:bg-default-50",
-                "data-[selectable=true]:focus:bg-default-50",
-                "data-[pressed=true]:opacity-70",
-                "data-[focus-visible=true]:ring-default-500",
-              ],
-            }}
-            selectedKeys={selectedKey}
-            selectionMode="single"
-            variant="flat"
-            onSelectionChange={setSelectedKey}
-          >
-            <DropdownSection
-              aria-label="Example with disabled actions"
-              className="w-full h-60 overflow-y-auto overflow-x-hidden px-2"
-            >
-              <DropdownItem
-                key="profile"
-                isReadOnly
-                className="h-14 gap-0 opacity-100 w-full p-0 m-0"
-              >
-                <Input placeholder="Search Puplar..." type="search" />{" "}
-              </DropdownItem>
-              {categories.map((category: string) => (
-                <DropdownItem key={category}>{category}</DropdownItem>
-              ))}
-            </DropdownSection>
-          </DropdownMenu>
-        </Dropdown>
-        {selectedValues}
-        <Dropdown>
-          <DropdownTrigger>
-            <Button className="capitalize" variant="bordered">
-              {selectedValues}
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            disallowEmptySelection
-            aria-label="Multiple selection example"
-            className="w-full h-60"
-            closeOnSelect={false}
-            selectedKeys={selectedKeys}
-            selectionMode="multiple"
-            variant="flat"
-            onSelectionChange={setSelectedKeys}
-          >
-            <DropdownSection
-              aria-label="Example with disabled actions"
-              className="w-full h-60 overflow-y-auto overflow-x-hidden px-2"
-            >
-              <DropdownItem
-                key="profile"
-                isReadOnly
-                className="h-14 gap-0 opacity-100 w-full p-0 m-0"
-              >
-                <Input placeholder="Search Puplar..." type="search" />{" "}
-              </DropdownItem>
-              {categories.map((category: string) => (
-                <DropdownItem key={category}>{category}</DropdownItem>
-              ))}
-            </DropdownSection>
-          </DropdownMenu>
-        </Dropdown>
-        <pre className="text-left">{JSON.stringify(blocks, null, 2)}</pre>
       </section>
     </main>
   );

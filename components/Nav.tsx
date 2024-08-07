@@ -39,20 +39,23 @@ export function Navbar({ user, ss }: any) {
         <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
       }
       type="search"
+      variant="bordered"
     />
   );
 
   return (
     <div>
       <NextUINavbar maxWidth="xl" position="static">
-        <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-          <NavbarBrand as="li" className="gap-3 max-w-fit">
+        <NavbarContent className="basis-1/5 max-sm:basis-full" justify="start">
+          <NavbarBrand as="li" className="gap-3 max-w-fit max-sm:gap-0">
             <NextLink
               className="flex justify-start items-center gap-4 ml-2"
               href="/"
             >
               <Logo />
-              <p className="font-medium text-inherit text-2xl">Tasamim</p>
+              <p className="font-medium text-inherit text-2xl max-sm:hidden">
+                Tasamim
+              </p>
             </NextLink>
           </NavbarBrand>
         </NavbarContent>
@@ -91,7 +94,7 @@ export function Navbar({ user, ss }: any) {
             ))}
           </div>
         </NavbarMenu>
-        <Dropdowns user={user} ss={ss} />
+        <Dropdowns ss={ss} user={user} />
       </NextUINavbar>
     </div>
   );

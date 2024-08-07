@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { Input } from "@nextui-org/input";
 
 import { createClient } from "@/utils/supabase/server";
-import { SubmitButton } from "@/app/login/submit-button";
+import { SubmitButton } from "@/app/auth/login/submit-button";
+import { Profile_username } from "@/app/continue/user";
 
 export default async function Profile({
   searchParams,

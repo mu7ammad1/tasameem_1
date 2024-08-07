@@ -11,7 +11,8 @@ export default async function Home() {
 
   let { data: board } = await supabase
     .from("boards")
-    .select("background,title,id,profiles(avatar,username),loves(id)");
+    .select("background,title,id,profiles(avatar,username),loves(id)")
+    .eq("draft", false);
 
   return (
     <section className="flex flex-col items-center justify-center gap-5 py-10 w-full">
@@ -53,6 +54,7 @@ export default async function Home() {
               <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
             }
             type="search"
+            variant="bordered"
           />
           <div className="w-1/2 flex justify-end max-md:w-full">
             خطوط , تصاميم

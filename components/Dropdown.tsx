@@ -52,8 +52,10 @@ export default function Dropdowns({ user, ss }: any) {
           <DropdownItem key="settings" href="/dashboard/setting">
             My Settings
           </DropdownItem>
-          <DropdownItem key="system">System</DropdownItem>
-          <DropdownItem key="configurations">Configurations</DropdownItem>
+          <DropdownItem key="dashboard" href="/dashboard">
+            Dashboard
+          </DropdownItem>
+          <DropdownItem key="continue" href="/continue">Continue</DropdownItem>
           <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
           <DropdownItem key="logout" color="danger" onClick={signOut}>
             Log Out
@@ -62,8 +64,8 @@ export default function Dropdowns({ user, ss }: any) {
       </Dropdown>
     </div>
   ) : (
-    <Link href="/login">
-      <Button className="max-w-fit">تسجيل دخول</Button>
+    <Link href="/auth/login">
+      <Button variant="bordered">تسجيل دخول</Button>
     </Link>
   );
 }

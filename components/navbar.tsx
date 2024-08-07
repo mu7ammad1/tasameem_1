@@ -5,7 +5,7 @@ import { Navbar } from "./Nav";
 export default function NavbarCom({ sss, ss }: any) {
   return (
     <div>
-      <Navbar user={sss} ss={ss}/>
+      <Navbar ss={ss} user={sss} />
     </div>
   );
 }
