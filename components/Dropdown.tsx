@@ -35,7 +35,7 @@ export default function Dropdowns({ user, ss }: any) {
             isBordered
             as="button"
             className="transition-transform object-fill"
-            src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${ss?.avatar}`}
+            src={`${ss.avatar_url}`}
           />
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -55,7 +55,9 @@ export default function Dropdowns({ user, ss }: any) {
           <DropdownItem key="dashboard" href="/dashboard">
             Dashboard
           </DropdownItem>
-          <DropdownItem key="continue" href="/continue">Continue</DropdownItem>
+          <DropdownItem key="continue" href="/continue">
+            Continue
+          </DropdownItem>
           <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
           <DropdownItem key="logout" color="danger" onClick={signOut}>
             Log Out

@@ -22,10 +22,10 @@ export default function CardBody_Page({ sss }: any) {
             <CardBody className="overflow-visible p-0">
               <Image
                 alt={item.title}
-                className="w-full object-cover h-60"
+                className="w-full object-fill h-60"
                 radius="sm"
                 shadow="none"
-                src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${item.background}`}
+                src={`${item.background}`}
                 width="100%"
               />
             </CardBody>
@@ -40,10 +40,7 @@ export default function CardBody_Page({ sss }: any) {
           <CardFooter className="text-small justify-between">
             <b>{item.title}</b>
             <Link href={`/${item.profiles.username}`}>
-              <Avatar
-                className={`w-5 h-5`}
-                src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${item.profiles.avatar}`}
-              />
+              <Avatar className={`w-5 h-5`} src={item.profiles.avatar_url} />
             </Link>
           </CardFooter>
         </Card>

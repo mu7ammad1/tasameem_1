@@ -11,7 +11,7 @@ export default async function Home() {
 
   let { data: board } = await supabase
     .from("boards")
-    .select("background,title,id,profiles(avatar,username),loves(id)")
+    .select("background,title,id,profiles (avatar_url,username),loves(id)")
     .eq("draft", false);
 
   return (

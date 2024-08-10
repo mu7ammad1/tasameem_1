@@ -4,6 +4,7 @@ import {
   ChevronDownCircleIcon,
   ChevronUpCircleIcon,
   CircleMinus,
+  Loader,
 } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import {
@@ -17,6 +18,20 @@ import {
 } from "@nextui-org/react";
 
 import { createClient } from "@/utils/supabase/client";
+
+
+interface TextBlock {
+  type: "text";
+  content: any;
+}
+
+
+type BlockType = "text" | "image";
+
+interface Block {
+  type: BlockType;
+  content: any;
+}
 
 export default function Block() {
   const [blocks, setBlocks] = useState<{ type: string; content: any }[]>([]);
@@ -70,11 +85,12 @@ export default function Block() {
     setBlocks(newBlocks);
   };
 
-  const uploadImageToSupabase = async (file: File) => {
+  const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     const supabase = createClient();
-    const { error } = await supabase.storage
-      .from("avatars")
-      .upload(`boards/${file.name}`, file);
+    const fileName = `${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage
+      .from("avatars/boards")
+      .upload(fileName, file);
 
     if (error) {
       console.error("Error uploading image:", error);
@@ -82,32 +98,28 @@ export default function Block() {
       return null;
     }
 
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("avatars").getPublicUrl(`boards/${file.name}`);
+    const { data: publicURL } = supabase.storage
+      .from("avatars/boards")
+      .getPublicUrl(fileName);
 
-    return publicUrl;
+    return publicURL.publicUrl;
   };
 
-  const handleAddNewImage = async (
+  const handleAddNewImage = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
     const files = event.target.files;
 
     if (files) {
-      setIsLoading(true);
       const newBlocksToAdd: any = [];
 
       for (const file of files) {
-        const publicURL = await uploadImageToSupabase(file);
-
-        if (publicURL) {
-          newBlocksToAdd.push({
-            type: "image",
-            content: publicURL,
-          });
-        }
+        newBlocksToAdd.push({
+          type: "image",
+          content: URL.createObjectURL(file), // استخدم URL.createObjectURL للعرض المحلي
+          localFile: file, // أضف خاصية للملف المحلي
+        });
       }
 
       setBlocks((prevBlocks) => [
@@ -115,8 +127,6 @@ export default function Block() {
         ...newBlocksToAdd,
         ...prevBlocks.slice(index + 1),
       ]);
-
-      setIsLoading(false);
     }
   };
 
@@ -138,62 +148,50 @@ export default function Block() {
   };
 
   const handleSave = useCallback(async () => {
-    // Filter out empty or placeholder image blocks
-    const filteredBlocks = blocks.filter(
-      (block) =>
-        (block.type === "text" && block.content.trim() !== "") ||
-        (block.type === "image" &&
-          block.content !== "https://via.placeholder.com/1024"),
-    );
-
-    // Handle cases with different messages
-    if (blocks.length === 0) {
-      setMessage("لا توجد بلوكات لحفظها.");
-
-      return;
-    }
-
-    if (filteredBlocks.length === 0) {
-      const hasTextBlock = blocks.some(
-        (block) => block.type === "text" && block.content.trim() === "",
-      );
-      const hasPlaceholderImage = blocks.some(
-        (block) =>
-          block.type === "image" &&
-          block.content === "https://via.placeholder.com/1024",
-      );
-
-      if (hasTextBlock) {
-        setMessage("يوجد بلوكات نصية فارغة.");
-      } else if (hasPlaceholderImage) {
-        setMessage("يوجد روابط صور غير متاحة.");
-      } else {
-        setMessage("لا توجد بلوكات صالحة للحفظ.");
-      }
-
-      return;
-    }
-
     setIsLoading(true);
+
     const supabase = createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
     const tagsArray = selectedValues.split(", ").map((tag) => tag.trim());
 
-    let backgroundImage = "original-d272f0bf5b00ca45764760a62b9bafb4";
-    const imageBlock = filteredBlocks.find((block) => block.type === "image");
+    // رفع الصور وتحديث الكتل بالروابط
+    const blocksWithUrls = await Promise.all(
+      blocks.map(async (block: any) => {
+        if (block.type === "image" && block.localFile) {
+          const publicURL = await uploadImageToSupabase(block.localFile);
 
-    if (imageBlock) {
-      backgroundImage = imageBlock.content;
+          if (publicURL) {
+            return { ...block, content: publicURL };
+          } else {
+            return null; // في حالة فشل رفع الصورة
+          }
+        }
+
+        return block;
+      }),
+    );
+
+    // إزالة أي كتل تحتوي على صور لم يتم رفعها بنجاح
+    const validBlocks = blocksWithUrls.filter(Boolean);
+
+    // التحقق من أن هناك كتل صالحة
+    if (validBlocks.length === 0) {
+      setIsLoading(false);
+      setMessage("لا توجد بلوكات صالحة للحفظ.");
+
+      return;
     }
 
-    console.log("Tags to be sent:", tagsArray); // Added for debugging
+    const backgroundImage =
+      validBlocks.find((block) => block.type === "image")?.content ||
+      "default-image-url";
 
     const { error } = await supabase.from("boards").insert([
       {
         title: title,
-        boards: filteredBlocks,
+        boards: validBlocks,
         background: backgroundImage,
         user: user?.id,
         tags: tagsArray,
@@ -320,23 +318,17 @@ export default function Block() {
                       <Button variant="flat">فتح القائمة</Button>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Dynamic Actions">
-                      <DropdownItem key="copy">
-                        <Button
-                          style={{ marginRight: "10px" }}
-                          variant="bordered"
-                          onClick={() => handleInsertImageBlock(index)}
-                        >
-                          صور
-                        </Button>
+                      <DropdownItem
+                        variant="bordered"
+                        onClick={() => handleInsertImageBlock(index)}
+                      >
+                        صور
                       </DropdownItem>
-                      <DropdownItem key="new">
-                        <Button
-                          style={{ marginRight: "10px" }}
-                          variant="bordered"
-                          onClick={() => handleInsertTextBlock(index)}
-                        >
-                          نصوص
-                        </Button>
+                      <DropdownItem
+                        variant="bordered"
+                        onClick={() => handleInsertTextBlock(index)}
+                      >
+                        نصوص
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
@@ -358,9 +350,9 @@ export default function Block() {
                             handleContentChange(index, e.target.value)
                           }
                         />
-                        {block.content}
                         <div className="flex flex-col">
-                          <button
+                          <Button
+                            isIconOnly
                             className="p-0 m-0 sticky top-0"
                             onClick={() => handleDeleteBlock(index)}
                           >
@@ -369,8 +361,9 @@ export default function Block() {
                               size={20}
                               strokeWidth={1.75}
                             />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            isIconOnly
                             className="p-0 m-0 sticky top-5"
                             disabled={index === 0}
                             onClick={() => moveBlock(index, "up")}
@@ -380,8 +373,9 @@ export default function Block() {
                               size={20}
                               strokeWidth={1.75}
                             />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            isIconOnly
                             className="p-0 m-0 sticky top-10"
                             disabled={index === blocks.length - 1}
                             onClick={() => moveBlock(index, "down")}
@@ -391,7 +385,7 @@ export default function Block() {
                               size={20}
                               strokeWidth={1.75}
                             />
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -503,7 +497,7 @@ export default function Block() {
 
           <div className="flex justify-center gap-5">
             <Button disabled={isLoading} variant="flat" onClick={handleSave}>
-              {isLoading ? "Saving..." : "Save"}
+              {isLoading ? <p className="flex gap-3"><span><Loader className="animate-spin"/></span> saving...</p> : "Save"}
             </Button>
             <section className="w-full max-w-3xl">
               {message && <div className="alert alert-warning">{message}</div>}

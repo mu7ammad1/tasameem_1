@@ -8,7 +8,7 @@ export default function CardProf({ avatar, bio, full_name, username }: any) {
       <div className="bg-foreground-100 p-5 w-full h-40 rounded-md mt-16 relative">
         <User
           avatarProps={{
-            src: `https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${avatar}`,
+            src: avatar,
             alt: "NextUI hero Image with delay",
             className: "rounded-full w-32 h-32 object-cover",
           }}

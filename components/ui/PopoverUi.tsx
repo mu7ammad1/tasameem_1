@@ -18,7 +18,7 @@ export default function PopoverUi({
         <User
           as="button"
           avatarProps={{
-            src: `https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${avatar}`,
+            src: avatar,
           }}
           className="transition-transform"
           description="Product Designer"

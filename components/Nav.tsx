@@ -13,6 +13,7 @@ import { Kbd } from "@nextui-org/kbd";
 import { Link } from "@nextui-org/link";
 import { Input } from "@nextui-org/input";
 import NextLink from "next/link";
+import { Button } from "@nextui-org/button";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -45,7 +46,7 @@ export function Navbar({ user, ss }: any) {
 
   return (
     <div>
-      <NextUINavbar maxWidth="xl" position="static">
+      <NextUINavbar as={`nav`} maxWidth="xl" position="static">
         <NavbarContent className="basis-1/5 max-sm:basis-full" justify="start">
           <NavbarBrand as="li" className="gap-3 max-w-fit max-sm:gap-0">
             <NextLink
@@ -94,6 +95,9 @@ export function Navbar({ user, ss }: any) {
             ))}
           </div>
         </NavbarMenu>
+        <Link href="/new">
+          <Button variant="ghost">New Board</Button>
+        </Link>
         <Dropdowns ss={ss} user={user} />
       </NextUINavbar>
     </div>

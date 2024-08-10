@@ -11,12 +11,7 @@ export const UserTwitterCard = ({ avatar, username, full_name, bio }: any) => {
     <Card className="max-w-[300px] border-none bg-transparent" shadow="none">
       <CardHeader className="justify-between gap-5">
         <div className="flex gap-3">
-          <Avatar
-            isBordered
-            radius="full"
-            size="md"
-            src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/avatar/${avatar}`}
-          />
+          <Avatar isBordered radius="full" size="md" src={avatar} />
           <div className="flex flex-col items-start justify-center">
             <Link
               className="text-small font-semibold leading-none text-default-600"

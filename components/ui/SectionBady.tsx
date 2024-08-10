@@ -18,7 +18,7 @@ export default function SectionBady({ boards }: any) {
               <Image
                 alt={`Image ${index}`}
                 className="w-full h-full cursor-pointer"
-                src={`https://hsmahnunqgbyxyjzikko.supabase.co/storage/v1/object/public/avatars/boards/${item.content}`}
+                src={`${item.content}`}
               />
             </div>
           )}

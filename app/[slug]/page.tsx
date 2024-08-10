@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   let { data: username } = await supabase
     .from("profiles")
-    .select("id,username,avatar,full_name,bio,categories,verification")
+    .select("id,username,avatar_url,full_name,bio,categories,verification")
     .eq(`username`, params.slug.toLowerCase())
     .limit(1)
     .single();
@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   let { data: board } = await supabase
     .from("boards")
-    .select("background,title,id,profiles (avatar,username),loves (id)")
+    .select("background,title,id,profiles (avatar_url,username),loves (id)")
     .eq("draft", false)
     .eq(`user`, username?.id);
 
@@ -36,13 +36,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
             bio: username.bio,
             work: username.categories,
             boar: board,
-            avatar: username.avatar,
+            avatar: username.avatar_url,
             followerId: user?.id,
             followingId: username.id,
+            username: username.username
           }}
         />
       ) : (
-        `false`
+        `0000`
       )}
     </div>
   );
