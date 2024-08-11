@@ -22,7 +22,7 @@ export default function CardBody_Page({ sss }: any) {
             <CardBody className="overflow-visible p-0">
               <Image
                 alt={item.title}
-                className="w-full object-fill h-60"
+                className="w-full object-cover h-60 max-sm:h-72"
                 radius="sm"
                 shadow="none"
                 src={`${item.background}`}
@@ -31,17 +31,25 @@ export default function CardBody_Page({ sss }: any) {
             </CardBody>
           </Link>
           <Chip
-            className="absolute top-4 left-4 z-50 p-2"
+            className="absolute top-4 right-4 z-50 p-2"
             color="default"
             variant="flat"
           >
             {item.loves.length} ❤️
           </Chip>
+          <Link
+            className="absolute top-0 left-0 z-50 p-2"
+            href={`/${item.profiles.username}`}
+          >
+            <Chip
+              avatar={<Avatar name="JW" src={item.profiles.avatar_url} />}
+              variant="solid"
+            >
+              {item.profiles.username}
+            </Chip>
+          </Link>
           <CardFooter className="text-small justify-between">
             <b>{item.title}</b>
-            <Link href={`/${item.profiles.username}`}>
-              <Avatar className={`w-5 h-5`} src={item.profiles.avatar_url} />
-            </Link>
           </CardFooter>
         </Card>
       ))}

@@ -14,12 +14,18 @@ import { Link } from "@nextui-org/link";
 import { Input } from "@nextui-org/input";
 import NextLink from "next/link";
 import { Button } from "@nextui-org/button";
+import { clsx } from "clsx";
+import { Fugaz_One } from "next/font/google";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { SearchIcon, Logo } from "@/components/icons";
+import { SearchIcon } from "@/components/icons";
 
 import Dropdowns from "./Dropdown";
+const fugaz_One = Fugaz_One({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export function Navbar({ user, ss }: any) {
   const searchInput = (
@@ -53,9 +59,9 @@ export function Navbar({ user, ss }: any) {
               className="flex justify-start items-center gap-4 ml-2"
               href="/"
             >
-              <Logo />
-              <p className="font-medium text-inherit text-2xl max-sm:hidden">
-                Tasamim
+              {/* <Logo /> */}
+              <p className={clsx(`font-medium text-3xl`, fugaz_One.className)}>
+                tasa<span className="text-blue-500">mim</span>
               </p>
             </NextLink>
           </NavbarBrand>

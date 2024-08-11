@@ -1,9 +1,9 @@
 import "@/styles/globals.css";
+
 import { Metadata } from "next";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
 import { Loader } from "lucide-react";
-import { redirect } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 import NavbarCom from "@/components/navbar";

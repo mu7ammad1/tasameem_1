@@ -1,7 +1,9 @@
-"use client";
-
-import React, { useEffect } from "react";
-import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
+import {
+  BubbleMenu,
+  EditorContent,
+  FloatingMenu,
+  useEditor,
+} from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Bold } from "@tiptap/extension-bold";
 import { Italic } from "@tiptap/extension-italic";
@@ -10,7 +12,7 @@ import { Link } from "@tiptap/extension-link";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { FontFamily } from "@tiptap/extension-font-family";
-import { Button } from "@nextui-org/button";
+import { Image } from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import {
   Dropdown,
@@ -18,11 +20,11 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/dropdown";
+import { Button } from "@nextui-org/button";
+
+
 
 const CustomMenuBar = ({ editor }: any) => {
-  if (!editor) {
-    return null;
-  }
 
   const setLink = () => {
     const url = prompt("Enter the URL");
@@ -45,9 +47,8 @@ const CustomMenuBar = ({ editor }: any) => {
     editor.chain().focus().unsetLink().run();
   };
 
-  const setFontFamily = (font: string) => {
-    editor.chain().focus().setFontFamily(font).run();
-  };
+  // Check if there's an active link
+  const hasLink = editor.isActive("link");
 
   return (
     <div style={{ marginBottom: "10px" }}>
@@ -64,39 +65,38 @@ const CustomMenuBar = ({ editor }: any) => {
         Add Link
       </Button>
       <Button
-        className={editor.isActive("link") ? "is-active" : ""}
-        onClick={editLink}
+        className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
       >
-        Edit Link
+        Left
       </Button>
-      <Button onClick={unsetLink}>Remove Link</Button>
-      <div>
+      <Button
+        className={editor.isActive({ textAlign: "center" }) ? "is-active" : ""}
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+      >
+        Center
+      </Button>
+      <Button
+        className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+      >
+        Right
+      </Button>
+      {hasLink && (
         <Button
-          className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          className={editor.isActive("link") ? "is-active" : ""}
+          onClick={editLink}
         >
-          Left
+          Edit Link
         </Button>
-        <Button
-          className={
-            editor.isActive({ textAlign: "center" }) ? "is-active" : ""
-          }
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        >
-          Center
-        </Button>
-        <Button
-          className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        >
-          Right
-        </Button>
-      </div>
+      )}
+      {hasLink && <Button onClick={unsetLink}>Remove Link</Button>}
     </div>
   );
 };
 
 export default function TipTap() {
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -107,12 +107,19 @@ export default function TipTap() {
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
-      TextStyle, // Enable text style extension
+      TextStyle,
       FontFamily.configure({
         types: ["textStyle"],
-      }), // Enable font family extension
+      }),
+      Image,
       Placeholder.configure({
-        placeholder: "Write something …",
+        placeholder: ({ node }) => {
+          if (node.type.name === "heading") {
+            return "What’s the title?";
+          }
+
+          return "Can you add some further context?";
+        },
       }),
     ],
     content: `
@@ -121,33 +128,26 @@ export default function TipTap() {
     `,
   });
 
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
+  if (!editor) {
+    return null;
+  }
 
-      if (target.tagName === "A" && target.closest(".ProseMirror")) {
-        event.preventDefault(); // منع الانتقال عند النقر على الرابط
-      }
-    };
-
-    document.addEventListener("click", handleClick);
-
-    return () => {
-      document.removeEventListener("click", handleClick);
-    };
-  }, []);
 
   return (
     <div style={{ padding: "20px", border: "1px solid #ddd" }}>
       {editor && (
-        <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+        <BubbleMenu
+          className="bubble-menu"
+          editor={editor}
+          tippyOptions={{ duration: 100 }}
+        >
           <div className="bubble-menu bg-background">
             <Dropdown backdrop="opaque">
               <DropdownTrigger>
                 <Button variant="bordered">Font</Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-                <DropdownItem key="new">
+                <DropdownItem key="arial">
                   <Button
                     onClick={() =>
                       editor.chain().focus().setFontFamily(`Arial`).run()
@@ -156,7 +156,7 @@ export default function TipTap() {
                     Arial
                   </Button>
                 </DropdownItem>
-                <DropdownItem key="copy">
+                <DropdownItem key="georgia">
                   <Button
                     onClick={() =>
                       editor.chain().focus().setFontFamily(`Georgia`).run()
@@ -165,7 +165,7 @@ export default function TipTap() {
                     Georgia
                   </Button>
                 </DropdownItem>
-                <DropdownItem key="edit">
+                <DropdownItem key="times-new-roman">
                   <Button
                     onClick={() =>
                       editor
@@ -178,7 +178,7 @@ export default function TipTap() {
                     Times New Roman
                   </Button>
                 </DropdownItem>
-                <DropdownItem key="edit">
+                <DropdownItem key="courier-new">
                   <Button
                     onClick={() =>
                       editor.chain().focus().setFontFamily(`Courier New`).run()
@@ -217,6 +217,35 @@ export default function TipTap() {
           </div>
         </BubbleMenu>
       )}
+      {editor && (
+        <FloatingMenu
+          className="floating-menu"
+          editor={editor}
+          tippyOptions={{ duration: 100 }}
+        >
+          <Button
+            className={editor.isActive("heading") ? "is-active" : ""}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
+          >
+            Heading
+          </Button>
+          <Button
+            className={editor.isActive("bold") ? "is-active" : ""}
+            onClick={() => editor.chain().focus().toggleBold().run()}
+          >
+            Bold
+          </Button>
+          <Button
+            className={editor.isActive("italic") ? "is-active" : ""}
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+          >
+            Italic
+          </Button>
+        </FloatingMenu>
+      )}
+
       <CustomMenuBar editor={editor} />
       <EditorContent editor={editor} />
     </div>

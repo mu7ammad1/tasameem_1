@@ -29,7 +29,9 @@
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.44.4",
     "@tiptap/core": "^2.5.9",
+    "@tiptap/extension-document": "^2.5.9",
     "@tiptap/extension-font-family": "^2.5.9",
+    "@tiptap/extension-image": "^2.5.9",
     "@tiptap/extension-link": "^2.5.9",
     "@tiptap/extension-placeholder": "^2.5.9",
     "@tiptap/extension-text-align": "^2.5.9",
@@ -47,6 +49,7 @@
     "quill": "^2.0.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-dropzone": "^14.2.3",
     "react-quilljs": "^2.0.4"
   },
   "devDependencies": {

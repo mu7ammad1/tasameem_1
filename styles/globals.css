@@ -37,3 +37,15 @@
     text-underline-offset: 8px;
     pointer-events: none; /* تعطيل النقر على الروابط */
 }
+
+
+.ProseMirror img {
+  display: block;
+  height: auto;
+  margin: 1.5rem 0;
+  max-width: 100%;
+
+  .ProseMirror-selectednode {
+    outline: 3px solid var(--purple);
+  }
+}
