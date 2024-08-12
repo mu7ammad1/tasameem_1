@@ -48,14 +48,14 @@ export default function B() {
         </Button>
         <Button
           color="default"
-          variant="flat"
+          variant="light"
           onPress={() => handleOpenModal("About")}
         >
           About
         </Button>
         <Button
           color="default"
-          variant="flat"
+          variant="light"
           onPress={() => handleOpenModal("Following")}
         >
           Following

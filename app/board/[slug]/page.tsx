@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   let { data: board } = await supabase
     .from("boards")
     .select(
-      `id,created_at,boards,tags,background,title,profiles (id,username,full_name,avatar_url,bio),loves (love,board)`,
+      `id,created_at,boards,tags,background,title,datails,profiles (id,username,full_name,avatar_url,bio),loves (love,board)`,
     )
     .eq("draft", false)
     .eq("id", params.slug)
@@ -99,6 +99,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <CardProf
           avatar={profile?.avatar_url}
           bio={profile?.bio}
+          content={board?.datails}
           full_name={profile?.full_name}
           username={profile?.username}
         />

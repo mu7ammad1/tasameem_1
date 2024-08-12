@@ -1,29 +1,60 @@
+"use client";
 import React from "react";
-import { Link } from "@nextui-org/link";
 import { User } from "@nextui-org/user";
+import { Button } from "@nextui-org/button";
+import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/modal";
+import { useDisclosure } from "@nextui-org/use-disclosure";
+import { PictureInPicture2 } from "lucide-react";
 
-export default function CardProf({ avatar, bio, full_name, username }: any) {
+import TipTap from "./tip";
+
+export default function CardProf({ avatar, content }: any) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
-    <section className="w-full my-10">
-      <div className="bg-foreground-100 p-5 w-full h-40 rounded-md mt-16 relative">
+    <section className="w-full mt-5">
+      <div className="bg-foreground-100 rounded-2xl p-3 w-full flex justify-between items-center">
         <User
           avatarProps={{
             src: avatar,
             alt: "NextUI hero Image with delay",
-            className: "rounded-full w-32 h-32 object-cover",
+            className: "rounded-full object-cover",
+            size: "md",
+            name: "TM",
           }}
-          className="flex flex-col text-center gap-3 *:flex *:justify-center *:items-center relative -top-20"
-          description={<p className="mt-2">{bio}</p>}
-          name={
-            <Link
-              className="text-2xl font-medium"
-              color="foreground"
-              href={`/${username}`}
-            >
-              {full_name}
-            </Link>
-          }
+          name={``}
         />
+        <div className="flex gap-3">
+          <Button isIconOnly className={`rounded-full`} variant="ghost">
+            TM
+          </Button>
+          <Button
+            isIconOnly
+            className={`rounded-full`}
+            variant="ghost"
+            onPress={onOpen}
+          >
+            <PictureInPicture2
+              absoluteStrokeWidth
+              size={20}
+              strokeWidth={1.5}
+            />
+          </Button>
+          <Modal isOpen={isOpen} size="5xl" onOpenChange={onOpenChange}>
+            <ModalContent className="pb-5">
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    Description
+                  </ModalHeader>
+                  <ModalBody>
+                    <TipTap content={content} />
+                  </ModalBody>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+        </div>
       </div>
     </section>
   );

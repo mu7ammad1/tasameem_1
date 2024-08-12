@@ -4,48 +4,51 @@
 
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
-}
- 
-/* Track */
-::-webkit-scrollbar-track {
-    background: #999;
-    border-radius: 5px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #000;
-    border-radius: 5px;
-}
- 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-.ProseMirror h1{
-    font-size: 30px;
-    padding-left: 15px;
-}
-.ProseMirror p{
-    font-size: 20px;
-}
-.ProseMirror * a{
-    text-decoration-line: underline;
-    text-decoration-thickness: 2px;
-    text-decoration-color: #3388ff;
-    text-underline-offset: 8px;
-    pointer-events: none; /* تعطيل النقر على الروابط */
+  width: 5px;
 }
 
+/* Track */
+::-webkit-scrollbar-track {
+  background: #999;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.ProseMirror h1 {
+  font-size: 30px;
+  padding-left: 15px;
+}
+.ProseMirror p {
+  font-size: 20px;
+}
+.ProseMirror * a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: #3388ff;
+  text-underline-offset: 8px;
+}
+.AAAA * a {
+  pointer-events: none;
+}
 
 .ProseMirror img {
   display: block;
+  border-radius: 20px;
   height: auto;
   margin: 1.5rem 0;
   max-width: 100%;
-
-  .ProseMirror-selectednode {
-    outline: 3px solid var(--purple);
-  }
 }
+/* .is-empty {
+    border-radius: 20px;
+    background-color: #eee;
+    height: 200px;
+} */

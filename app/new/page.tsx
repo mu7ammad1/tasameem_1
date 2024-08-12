@@ -11,14 +11,8 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Button,
   DropdownSection,
   Image,
-  useDisclosure,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
 } from "@nextui-org/react";
 import {
   BubbleMenu,
@@ -35,6 +29,15 @@ import { TextAlign } from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { FontFamily } from "@tiptap/extension-font-family";
 import Placeholder from "@tiptap/extension-placeholder";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 
 import { createClient } from "@/utils/supabase/client";
 
@@ -50,6 +53,7 @@ export default function Block() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [selectedKey, setSelectedKey]: any = useState(new Set(["Design"]));
   const [selectedKeys, setSelectedKeys]: any = React.useState(
@@ -192,8 +196,6 @@ export default function Block() {
       validBlocks.find((block) => block.type === "image")?.content ||
       "default-image-url";
 
-    // Check in link error
-
     const { error } = await supabase.from("boards").insert([
       {
         title: title,
@@ -202,7 +204,7 @@ export default function Block() {
         user: user?.id,
         tags: tagsArray,
         categories: selectedValue,
-        datails: `editor?.getjson()`
+        datails: editor?.getJSON(),
       },
     ]);
 
@@ -210,7 +212,7 @@ export default function Block() {
     if (
       error ||
       validBlocks.find((block) => block.type === "image")?.content ===
-        `https://via.placeholder.com/1024`
+      `https://via.placeholder.com/1024`
     ) {
       console.error("Error inserting blocks:", error);
       setMessage("خطأ في حفظ البلوكات. حاول مرة أخرى.");
@@ -220,6 +222,37 @@ export default function Block() {
       setMessage("تم حفظ البلوكات بنجاح.");
     }
   }, [blocks, selectedKey, selectedKeys, title]);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Bold,
+      Italic,
+      Heading,
+      Link,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      TextStyle,
+      FontFamily.configure({
+        types: ["textStyle"],
+      }),
+      Placeholder.configure({
+        placeholder: ({ node }) => {
+          if (node.type.name === "heading") {
+            return "What’s the title?";
+          }
+
+          return "Can you add some further context?";
+        },
+      }),
+    ],
+    content: ``,
+  });
+
+  if (!editor) {
+    return null;
+  }
 
   const categories: any = [
     "Design",
@@ -307,7 +340,7 @@ export default function Block() {
         <Input
           isRequired
           required
-          className="w-2/3 max-md:w-full font-black *:*:*:*:text-3xl *:*:*:*:font-medium *:*:*:*:placeholder:text-right *:*:*:*:placeholder:mb-2"
+          className="w-full max-w-4xl max-md:w-full font-black *:*:*:*:text-3xl *:*:*:*:font-medium *:*:*:*:placeholder:text-right *:*:*:*:placeholder:mb-2"
           color="default"
           dir="auto"
           name="title"
@@ -319,60 +352,103 @@ export default function Block() {
         />
       </section>
       <section className="w-full flex justify-center">
-        <section className="w-full max-w-5xl">
+        <section className="w-full max-w-4xl">
           <div className="w-full min-h-80">
             {blocks.map((block, index) => (
               <div key={index}>
                 <div className="w-full flex justify-center items-center my-3">
-                  <Dropdown backdrop="blur" placement="top">
-                    <DropdownTrigger className="w-full h-10">
-                      <Button variant="bordered">فتح القائمة</Button>
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Dynamic Actions">
-                      <DropdownItem
-                        variant="bordered"
-                        onClick={() => handleInsertImageBlock(index)}
-                      >
-                        صور
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
+                  <Button
+                    className="w-full"
+                    variant="bordered"
+                    onClick={() => handleInsertImageBlock(index)}
+                  >
+                    صور
+                  </Button>
                 </div>
-                <ModalHeaderComp
-                  block={block}
-                  blocks={blocks}
-                  handleAddNewImage={(e: any) => handleAddNewImage(e, index)}
-                  handleDeleteBlock={() => handleDeleteBlock(index)}
-                  handleInsertImageBlock={() =>
-                    handleInsertImageBlock(blocks.length)
-                  }
-                  index={index}
-                  moveBlockdown={() => moveBlock(index, "down")}
-                  moveBlockup={() => moveBlock(index, "up")}
-                />
+                <div>
+                  <div className="flex gap-3">
+                    <Button
+                      isIconOnly
+                      className="p-0 m-0 sticky top-5"
+                      disabled={index === 0}
+                      onClick={() => moveBlock(index, "up")}
+                    >
+                      <ChevronUpCircleIcon
+                        absoluteStrokeWidth
+                        size={20}
+                        strokeWidth={1.75}
+                      />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      className="p-0 m-0 sticky top-10"
+                      disabled={index === blocks.length - 1}
+                      onClick={() => moveBlock(index, "down")}
+                    >
+                      <ChevronDownCircleIcon
+                        absoluteStrokeWidth
+                        size={20}
+                        strokeWidth={1.75}
+                      />
+                    </Button>
+                  </div>
+                  <div>
+                    <div className="w-full flex gap-5">
+                      <div className="w-full">
+                        {block.type === "image" && (
+                          <div className="h-full w-full">
+                            <div className="py-4 w-full h-full">
+                              <div className=" flex justify-between">
+                                <Button
+                                  isIconOnly
+                                  className="w-full h-full"
+                                  color="default"
+                                  variant="bordered"
+                                  onClick={() =>
+                                    document
+                                      .getElementById(`file-input-new-${index}`)
+                                      ?.click()
+                                  }
+                                >
+                                  <Image
+                                    alt={`boards/${index}`}
+                                    className="min-w-32 min-h-32"
+                                    src={block.content}
+                                  />
+                                </Button>
+                                <input
+                                  multiple
+                                  accept="image/*"
+                                  id={`file-input-new-${index}`}
+                                  style={{ display: "none" }}
+                                  type="file"
+                                  onChange={(e) => handleAddNewImage(e, index)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
             <div>
               <div className="w-full flex justify-center items-center my-3">
-                <Dropdown backdrop="opaque">
-                  <DropdownTrigger className="w-full h-10">
-                    <Button variant="bordered">فتح القائمة</Button>
-                  </DropdownTrigger>
-                  <DropdownMenu aria-label="Dynamic Actions">
-                    <DropdownItem
-                      variant="bordered"
-                      onClick={() => handleInsertImageBlock(blocks.length)}
-                    >
-                      صورة
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
+                <Button
+                  className="w-full"
+                  variant="bordered"
+                  onClick={() => handleInsertImageBlock(blocks.length)}
+                >
+                  صورة
+                </Button>
               </div>
             </div>
           </div>
 
           <div className="flex justify-center gap-5">
-            <Button disabled={isLoading} variant="flat" onClick={handleSave}>
+            <Button disabled={isLoading} size="md" variant="flat" onClick={handleSave}>
               {isLoading ? (
                 <p className="flex gap-3">
                   <span>
@@ -387,6 +463,8 @@ export default function Block() {
             <section className="w-full max-w-3xl">
               {message && <div className="alert alert-warning">{message}</div>}
             </section>
+
+            <Button onPress={onOpen}>اضف التفاصيل</Button>
 
             <Dropdown>
               <DropdownTrigger>
@@ -416,7 +494,7 @@ export default function Block() {
 
             <Dropdown>
               <DropdownTrigger>
-                <Button className="capitalize" variant="bordered">
+                <Button className="capitalize" variant="solid">
                   {selectedValue}
                 </Button>
               </DropdownTrigger>
@@ -438,7 +516,7 @@ export default function Block() {
                 }}
                 selectedKeys={selectedKey}
                 selectionMode="single"
-                variant="flat"
+                variant="solid"
                 onSelectionChange={setSelectedKey}
               >
                 <DropdownSection
@@ -454,113 +532,149 @@ export default function Block() {
           </div>
         </section>
       </section>
+      <section>
+        <>
+          <Modal size="5xl" isOpen={isOpen} onOpenChange={onOpenChange}>
+            <ModalContent className="h-96">
+              {(onClose) => (
+                <>
+                  <ModalBody>
+                    <div style={{ padding: "20px", border: "1px solid #ddd" }}>
+                      {editor && (
+                        <BubbleMenu
+                          className="bubble-menu"
+                          editor={editor}
+                          tippyOptions={{ duration: 100 }}
+                        >
+                          <div className="bubble-menu bg-background">
+                            <Dropdown backdrop="opaque">
+                              <DropdownTrigger>
+                                <Button variant="bordered">Font</Button>
+                              </DropdownTrigger>
+                              <DropdownMenu aria-label="Static Actions">
+                                <DropdownItem key="arial">
+                                  <Button
+                                    onClick={() =>
+                                      editor.chain().focus().setFontFamily(`Arial`).run()
+                                    }
+                                  >
+                                    Arial
+                                  </Button>
+                                </DropdownItem>
+                                <DropdownItem key="georgia">
+                                  <Button
+                                    onClick={() =>
+                                      editor.chain().focus().setFontFamily(`Georgia`).run()
+                                    }
+                                  >
+                                    Georgia
+                                  </Button>
+                                </DropdownItem>
+                                <DropdownItem key="times-new-roman">
+                                  <Button
+                                    onClick={() =>
+                                      editor
+                                        .chain()
+                                        .focus()
+                                        .setFontFamily(`Times New Roman`)
+                                        .run()
+                                    }
+                                  >
+                                    Times New Roman
+                                  </Button>
+                                </DropdownItem>
+                                <DropdownItem key="courier-new">
+                                  <Button
+                                    onClick={() =>
+                                      editor
+                                        .chain()
+                                        .focus()
+                                        .setFontFamily(`Courier New`)
+                                        .run()
+                                    }
+                                  >
+                                    Courier New
+                                  </Button>
+                                </DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
+
+                            <Button
+                              className={editor.isActive("bold") ? "is-active" : ""}
+                              onClick={() => editor.chain().focus().toggleBold().run()}
+                            >
+                              Bold
+                            </Button>
+                            <Button
+                              className={editor.isActive("italic") ? "is-active" : ""}
+                              onClick={() => editor.chain().focus().toggleItalic().run()}
+                            >
+                              Italic
+                            </Button>
+                            <Button
+                              className={editor.isActive("link") ? "is-active" : ""}
+                              onClick={() => {
+                                const url = prompt("Enter the URL");
+
+                                if (url) {
+                                  editor.chain().focus().setLink({ href: url }).run();
+                                }
+                              }}
+                            >
+                              Add Link
+                            </Button>
+                          </div>
+                        </BubbleMenu>
+                      )}
+                      {editor && (
+                        <FloatingMenu
+                          className="floating-menu"
+                          editor={editor}
+                          tippyOptions={{ duration: 100 }}
+                        >
+                          <Button
+                            className={editor.isActive("heading") ? "is-active" : ""}
+                            onClick={() =>
+                              editor.chain().focus().toggleHeading({ level: 1 }).run()
+                            }
+                          >
+                            Heading
+                          </Button>
+                          <Button
+                            className={editor.isActive("bold") ? "is-active" : ""}
+                            onClick={() => editor.chain().focus().toggleBold().run()}
+                          >
+                            Bold
+                          </Button>
+                          <Button
+                            className={editor.isActive("italic") ? "is-active" : ""}
+                            onClick={() => editor.chain().focus().toggleItalic().run()}
+                          >
+                            Italic
+                          </Button>
+                        </FloatingMenu>
+                      )}
+
+                      <CustomMenuBar editor={editor} />
+                      <EditorContent editor={editor} className="AAAA" />
+                    </div>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="danger" variant="light" onPress={onClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+        </>
+      </section>
     </main>
   );
 }
 
-export function ModalHeaderComp({
-  index,
-  moveBlockup,
-  moveBlockdown,
-  handleAddNewImage,
-  block,
-  blocks,
-}: any) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  return (
-    <>
-      {block.type === "image" && (
-        <Button
-          className="w-full h-full border-none"
-          variant="bordered"
-          onPress={onOpen}
-        >
-          <Image
-            alt={`boards/${index}`}
-            className="min-w-32 min-h-32"
-            src={block.content}
-          />
-        </Button>
-      )}
-      <Modal backdrop="opaque" isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex gap-3">
-                <Button
-                  isIconOnly
-                  className="p-0 m-0 sticky top-5"
-                  disabled={index === 0}
-                  onClick={moveBlockup}
-                >
-                  <ChevronUpCircleIcon
-                    absoluteStrokeWidth
-                    size={20}
-                    strokeWidth={1.75}
-                  />
-                </Button>
-                <Button
-                  isIconOnly
-                  className="p-0 m-0 sticky top-10"
-                  disabled={index === blocks.length - 1}
-                  onClick={moveBlockdown}
-                >
-                  <ChevronDownCircleIcon
-                    absoluteStrokeWidth
-                    size={20}
-                    strokeWidth={1.75}
-                  />
-                </Button>
-              </ModalHeader>
-              <ModalBody>
-                <div className="w-full flex gap-5">
-                  <div className="w-full">
-                    {block.type === "image" && (
-                      <div className="h-full w-full">
-                        <div className="py-4 w-full h-full">
-                          <div className=" flex justify-between">
-                            <Button
-                              isIconOnly
-                              className="w-full h-full"
-                              color="default"
-                              variant="bordered"
-                              onClick={() =>
-                                document
-                                  .getElementById(`file-input-new-${index}`)
-                                  ?.click()
-                              }
-                            >
-                              <Image
-                                alt={`boards/${index}`}
-                                className="min-w-32 min-h-32"
-                                src={block.content}
-                              />
-                            </Button>
-                            <input
-                              multiple
-                              accept="image/*"
-                              id={`file-input-new-${index}`}
-                              style={{ display: "none" }}
-                              type="file"
-                              onChange={(e) => handleAddNewImage(e, index)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
 const CustomMenuBar = ({ editor }: any) => {
-
   const setLink = () => {
     const url = prompt("Enter the URL");
 
@@ -629,159 +743,3 @@ const CustomMenuBar = ({ editor }: any) => {
     </div>
   );
 };
-
-export function TipTap() {
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Bold,
-      Italic,
-      Heading,
-      Link,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      TextStyle,
-      FontFamily.configure({
-        types: ["textStyle"],
-      }),
-      Placeholder.configure({
-        placeholder: ({ node }) => {
-          if (node.type.name === "heading") {
-            return "What’s the title?";
-          }
-
-          return "Can you add some further context?";
-        },
-      }),
-    ],
-    content: `
-      <h1>Hey, try to select some text here.</h1>
-      <p>There will popup a menu for selecting some inline styles. Remember: you have full control about content and styling of this menu.</p>
-    `,
-  });
-
-  if (!editor) {
-    return null;
-  }
-
-
-  return (
-    <div style={{ padding: "20px", border: "1px solid #ddd" }}>
-      {editor && (
-        <BubbleMenu
-          className="bubble-menu"
-          editor={editor}
-          tippyOptions={{ duration: 100 }}
-        >
-          <div className="bubble-menu bg-background">
-            <Dropdown backdrop="opaque">
-              <DropdownTrigger>
-                <Button variant="bordered">Font</Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Static Actions">
-                <DropdownItem key="arial">
-                  <Button
-                    onClick={() =>
-                      editor.chain().focus().setFontFamily(`Arial`).run()
-                    }
-                  >
-                    Arial
-                  </Button>
-                </DropdownItem>
-                <DropdownItem key="georgia">
-                  <Button
-                    onClick={() =>
-                      editor.chain().focus().setFontFamily(`Georgia`).run()
-                    }
-                  >
-                    Georgia
-                  </Button>
-                </DropdownItem>
-                <DropdownItem key="times-new-roman">
-                  <Button
-                    onClick={() =>
-                      editor
-                        .chain()
-                        .focus()
-                        .setFontFamily(`Times New Roman`)
-                        .run()
-                    }
-                  >
-                    Times New Roman
-                  </Button>
-                </DropdownItem>
-                <DropdownItem key="courier-new">
-                  <Button
-                    onClick={() =>
-                      editor.chain().focus().setFontFamily(`Courier New`).run()
-                    }
-                  >
-                    Courier New
-                  </Button>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-
-            <Button
-              className={editor.isActive("bold") ? "is-active" : ""}
-              onClick={() => editor.chain().focus().toggleBold().run()}
-            >
-              Bold
-            </Button>
-            <Button
-              className={editor.isActive("italic") ? "is-active" : ""}
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-            >
-              Italic
-            </Button>
-            <Button
-              className={editor.isActive("link") ? "is-active" : ""}
-              onClick={() => {
-                const url = prompt("Enter the URL");
-
-                if (url) {
-                  editor.chain().focus().setLink({ href: url }).run();
-                }
-              }}
-            >
-              Add Link
-            </Button>
-          </div>
-        </BubbleMenu>
-      )}
-      {editor && (
-        <FloatingMenu
-          className="floating-menu"
-          editor={editor}
-          tippyOptions={{ duration: 100 }}
-        >
-          <Button
-            className={editor.isActive("heading") ? "is-active" : ""}
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
-            }
-          >
-            Heading
-          </Button>
-          <Button
-            className={editor.isActive("bold") ? "is-active" : ""}
-            onClick={() => editor.chain().focus().toggleBold().run()}
-          >
-            Bold
-          </Button>
-          <Button
-            className={editor.isActive("italic") ? "is-active" : ""}
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-          >
-            Italic
-          </Button>
-        </FloatingMenu>
-      )}
-
-      <CustomMenuBar editor={editor} />
-      <EditorContent editor={editor} />
-    </div>
-  );
-}

@@ -11,7 +11,6 @@ export default function Isloved({ isboard, followingId }: any) {
   const [loading, setLoading] = useState(true);
   const [lovesCount, setLovesCount] = useState<number>(0);
 
-
   useEffect(() => {
     const checkFollowStatus = async () => {
       setLoading(true);
@@ -92,20 +91,17 @@ export default function Isloved({ isboard, followingId }: any) {
       className={
         isFollowing ? "bg-transparent text-foreground border-default-200" : ""
       }
-      color={isFollowing ? "default" : "primary"} // استخدام اللون "danger" بدلاً من "error"
+      color={isFollowing ? "default" : "primary"}
       radius="full"
       size="sm"
       variant={isFollowing ? "bordered" : "solid"}
       onClick={handleFollowToggle}
     >
-      <Chip radius="md" variant="light">
-        {lovesCount}
-      </Chip>
       <svg
         className="size-6"
         fill="none"
         stroke="currentColor"
-        strokeWidth={2.3}
+        strokeWidth={2}
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -115,7 +111,11 @@ export default function Isloved({ isboard, followingId }: any) {
           strokeLinejoin="round"
         />
       </svg>
-      {isFollowing ? "U n l o v e" : "F o l l o w"}
+      {isFollowing ? (
+        <Chip radius="full" variant="light">
+          {lovesCount}
+        </Chip>
+      ) : null}
     </Button>
   );
 }
